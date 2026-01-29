@@ -1,0 +1,548 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXContainerItemProxy section */
+		FluxTestsProxy /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FluxProject /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FluxTarget;
+			remoteInfo = Flux;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXBuildFile section */
+		AppStateBuild /* Models/AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AppStateRef /* Models/AppState.swift */; };
+		ContentViewBuild /* Views/ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ContentViewRef /* Views/ContentView.swift */; };
+		DLLDependencyResolverBuild /* Services/DLLDependencyResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DLLDependencyResolverRef /* Services/DLLDependencyResolver.swift */; };
+		DLLInjectorBuild /* Services/DLLInjector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DLLInjectorRef /* Services/DLLInjector.swift */; };
+		DependencyMgrBuild /* Services/DependencyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DependencyMgrRef /* Services/DependencyManager.swift */; };
+		DeveloperFeedbackBuild /* Services/DeveloperFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DeveloperFeedbackRef /* Services/DeveloperFeedback.swift */; };
+		DeveloperFeedbackViewBuild /* Views/DeveloperFeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DeveloperFeedbackViewRef /* Views/DeveloperFeedbackView.swift */; };
+		ExecutionEnvBuild /* Services/ExecutionEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = ExecutionEnvRef /* Services/ExecutionEnvironment.swift */; };
+		FluxAppBuild /* FluxApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FluxAppRef /* FluxApp.swift */; };
+		LaunchEnvironmentTestsBuild /* Tests/LaunchEnvironmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = LaunchEnvironmentTestsRef /* Tests/LaunchEnvironmentTests.swift */; };
+		XCTestFrameworkBuild /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XCTestFrameworkRef /* XCTest.framework */; };
+		OpenFluxIconBuild /* OpenFlux.icns in Resources */ = {isa = PBXBuildFile; fileRef = OpenFluxIconRef /* OpenFlux.icns */; };
+		GPTKDetectorBuild /* Services/GPTKDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = GPTKDetectorRef /* Services/GPTKDetector.swift */; };
+		GameBuild /* Models/Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = GameRef /* Models/Game.swift */; };
+		GameLauncherBuild /* Services/GameLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = GameLauncherRef /* Services/GameLauncher.swift */; };
+		GamesViewBuild /* Views/GamesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = GamesViewRef /* Views/GamesView.swift */; };
+		HexColorPickerBuild /* Services/HexColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = HexColorPickerRef /* Services/HexColorPicker.swift */; };
+		LaunchCoordinatorBuild /* Services/LaunchCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = LaunchCoordinatorRef /* Services/LaunchCoordinator.swift */; };
+		LogManagerBuild /* Services/LogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = LogManagerRef /* Services/LogManager.swift */; };
+		LogsViewBuild /* Views/LogsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = LogsViewRef /* Views/LogsView.swift */; };
+		MetalDetectorBuild /* Services/MetalDeviceDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = MetalDetectorRef /* Services/MetalDeviceDetector.swift */; };
+		PEInspectorBuild /* Services/PEInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = PEInspectorRef /* Services/PEInspector.swift */; };
+		PrefixesViewBuild /* Views/PrefixesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PrefixesViewRef /* Views/PrefixesView.swift */; };
+		ProcessMonitorBuild /* Services/ProcessMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ProcessMonitorRef /* Services/ProcessMonitor.swift */; };
+		SettingsManagerBuild /* Services/SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = SettingsManagerRef /* Services/SettingsManager.swift */; };
+		SettingsViewBuild /* Views/SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SettingsViewRef /* Views/SettingsView.swift */; };
+		SplashViewBuild /* Views/SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SplashViewRef /* Views/SplashView.swift */; };
+		StartupViewBuild /* Views/StartupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = StartupViewRef /* Views/StartupView.swift */; };
+		SteamDetectorBuild /* Services/SteamLibraryDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = SteamDetectorRef /* Services/SteamLibraryDetector.swift */; };
+		SystemDetectorBuild /* Services/SystemDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = SystemDetectorRef /* Services/SystemDetector.swift */; };
+		ThemeExtBuild /* Services/ThemeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ThemeExtRef /* Services/ThemeExtension.swift */; };
+		ThemeManagerBuild /* Services/ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ThemeManagerRef /* Services/ThemeManager.swift */; };
+		WineEnvironmentBuilderBuild /* Services/WineEnvironmentBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = WineEnvironmentBuilderRef /* Services/WineEnvironmentBuilder.swift */; };
+		WineDetectorBuild /* Services/WineDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = WineDetectorRef /* Services/WineDetector.swift */; };
+		WineProcessRunnerBuild /* Services/WineProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = WineProcessRunnerRef /* Services/WineProcessRunner.swift */; };
+		WineSmokeTestRunnerBuild /* Services/WineSmokeTestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = WineSmokeTestRunnerRef /* Services/WineSmokeTestRunner.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		AppStateRef /* Models/AppState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Models/AppState.swift; sourceTree = "<group>"; };
+		ContentViewRef /* Views/ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/ContentView.swift; sourceTree = "<group>"; };
+		DLLDependencyResolverRef /* Services/DLLDependencyResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/DLLDependencyResolver.swift; sourceTree = "<group>"; };
+		DLLInjectorRef /* Services/DLLInjector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/DLLInjector.swift; sourceTree = "<group>"; };
+		DependencyMgrRef /* Services/DependencyManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/DependencyManager.swift; sourceTree = "<group>"; };
+		DeveloperFeedbackRef /* Services/DeveloperFeedback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/DeveloperFeedback.swift; sourceTree = "<group>"; };
+		DeveloperFeedbackViewRef /* Views/DeveloperFeedbackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/DeveloperFeedbackView.swift; sourceTree = "<group>"; };
+		ExecutionEnvRef /* Services/ExecutionEnvironment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/ExecutionEnvironment.swift; sourceTree = "<group>"; };
+		FluxAppRef /* FluxApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FluxApp.swift; sourceTree = "<group>"; };
+		GPTKDetectorRef /* Services/GPTKDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/GPTKDetector.swift; sourceTree = "<group>"; };
+		GameLauncherRef /* Services/GameLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/GameLauncher.swift; sourceTree = "<group>"; };
+		GameRef /* Models/Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Models/Game.swift; sourceTree = "<group>"; };
+		GamesViewRef /* Views/GamesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/GamesView.swift; sourceTree = "<group>"; };
+		HexColorPickerRef /* Services/HexColorPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/HexColorPicker.swift; sourceTree = "<group>"; };
+		InfoRef /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		LaunchEnvironmentTestsRef /* Tests/LaunchEnvironmentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tests/LaunchEnvironmentTests.swift; sourceTree = "<group>"; };
+		TestsInfoPlistRef /* Tests/Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tests/Info.plist; sourceTree = "<group>"; };
+		FluxTestsProductRef /* FluxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FluxTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		XCTestFrameworkRef /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
+		LaunchCoordinatorRef /* Services/LaunchCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/LaunchCoordinator.swift; sourceTree = "<group>"; };
+		LogManagerRef /* Services/LogManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/LogManager.swift; sourceTree = "<group>"; };
+		LogsViewRef /* Views/LogsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/LogsView.swift; sourceTree = "<group>"; };
+		MetalDetectorRef /* Services/MetalDeviceDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/MetalDeviceDetector.swift; sourceTree = "<group>"; };
+		PEInspectorRef /* Services/PEInspector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/PEInspector.swift; sourceTree = "<group>"; };
+		PrefixesViewRef /* Views/PrefixesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/PrefixesView.swift; sourceTree = "<group>"; };
+		ProcessMonitorRef /* Services/ProcessMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/ProcessMonitor.swift; sourceTree = "<group>"; };
+		ProductRef /* Flux.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flux.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		OpenFluxIconRef /* OpenFlux.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = OpenFlux.icns; sourceTree = "<group>"; };
+		SettingsManagerRef /* Services/SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/SettingsManager.swift; sourceTree = "<group>"; };
+		SettingsViewRef /* Views/SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/SettingsView.swift; sourceTree = "<group>"; };
+		SplashViewRef /* Views/SplashView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/SplashView.swift; sourceTree = "<group>"; };
+		StartupViewRef /* Views/StartupView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/StartupView.swift; sourceTree = "<group>"; };
+		SteamDetectorRef /* Services/SteamLibraryDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/SteamLibraryDetector.swift; sourceTree = "<group>"; };
+		SystemDetectorRef /* Services/SystemDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/SystemDetector.swift; sourceTree = "<group>"; };
+		ThemeExtRef /* Services/ThemeExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/ThemeExtension.swift; sourceTree = "<group>"; };
+		ThemeManagerRef /* Services/ThemeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/ThemeManager.swift; sourceTree = "<group>"; };
+		WineEnvironmentBuilderRef /* Services/WineEnvironmentBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/WineEnvironmentBuilder.swift; sourceTree = "<group>"; };
+		WineDetectorRef /* Services/WineDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/WineDetector.swift; sourceTree = "<group>"; };
+		WineProcessRunnerRef /* Services/WineProcessRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/WineProcessRunner.swift; sourceTree = "<group>"; };
+		WineSmokeTestRunnerRef /* Services/WineSmokeTestRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/WineSmokeTestRunner.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FrameworksPhase /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		TestsFrameworksPhase /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				XCTestFrameworkBuild /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXResourcesBuildPhase section */
+		ResourcesPhase /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				OpenFluxIconBuild /* OpenFlux.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		TestsResourcesPhase /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXGroup section */
+		MainGroup = {
+			isa = PBXGroup;
+			children = (
+				FluxAppRef /* FluxApp.swift */,
+				OpenFluxIconRef /* OpenFlux.icns */,
+				InfoRef /* Info.plist */,
+				ModelsGroup /* Models */,
+				ServicesGroup /* Services */,
+				TestsGroup /* Tests */,
+				ViewsGroup /* Views */,
+				FrameworksGroup /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		FrameworksGroup /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				XCTestFrameworkRef /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		TestsGroup /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				LaunchEnvironmentTestsRef /* Tests/LaunchEnvironmentTests.swift */,
+				TestsInfoPlistRef /* Tests/Info.plist */,
+			);
+			name = Tests;
+			sourceTree = "<group>";
+		};
+		ModelsGroup /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AppStateRef /* Models/AppState.swift */,
+				GameRef /* Models/Game.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		ProductsGroup /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ProductRef /* Flux.app */,
+				FluxTestsProductRef /* FluxTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		ServicesGroup /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				DLLDependencyResolverRef /* Services/DLLDependencyResolver.swift */,
+				DLLInjectorRef /* Services/DLLInjector.swift */,
+				DependencyMgrRef /* Services/DependencyManager.swift */,
+				DeveloperFeedbackRef /* Services/DeveloperFeedback.swift */,
+				ExecutionEnvRef /* Services/ExecutionEnvironment.swift */,
+				GPTKDetectorRef /* Services/GPTKDetector.swift */,
+				GameLauncherRef /* Services/GameLauncher.swift */,
+				HexColorPickerRef /* Services/HexColorPicker.swift */,
+				LaunchCoordinatorRef /* Services/LaunchCoordinator.swift */,
+				LogManagerRef /* Services/LogManager.swift */,
+				MetalDetectorRef /* Services/MetalDeviceDetector.swift */,
+				PEInspectorRef /* Services/PEInspector.swift */,
+				ProcessMonitorRef /* Services/ProcessMonitor.swift */,
+				SettingsManagerRef /* Services/SettingsManager.swift */,
+				SteamDetectorRef /* Services/SteamLibraryDetector.swift */,
+				SystemDetectorRef /* Services/SystemDetector.swift */,
+				ThemeExtRef /* Services/ThemeExtension.swift */,
+				ThemeManagerRef /* Services/ThemeManager.swift */,
+				WineEnvironmentBuilderRef /* Services/WineEnvironmentBuilder.swift */,
+				WineDetectorRef /* Services/WineDetector.swift */,
+				WineProcessRunnerRef /* Services/WineProcessRunner.swift */,
+				WineSmokeTestRunnerRef /* Services/WineSmokeTestRunner.swift */,
+			);
+			name = Services;
+			sourceTree = "<group>";
+		};
+		ViewsGroup /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				ContentViewRef /* Views/ContentView.swift */,
+				DeveloperFeedbackViewRef /* Views/DeveloperFeedbackView.swift */,
+				GamesViewRef /* Views/GamesView.swift */,
+				LogsViewRef /* Views/LogsView.swift */,
+				PrefixesViewRef /* Views/PrefixesView.swift */,
+				SettingsViewRef /* Views/SettingsView.swift */,
+				SplashViewRef /* Views/SplashView.swift */,
+				StartupViewRef /* Views/StartupView.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FluxTarget /* Flux */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = TargetConfigList /* Build configuration list for PBXNativeTarget "Flux" */;
+			buildPhases = (
+				SourcesPhase /* Sources */,
+				FrameworksPhase /* Frameworks */,
+				ResourcesPhase /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Flux;
+			productName = Flux;
+			productReference = ProductRef /* Flux.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FluxTestsTarget /* FluxTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = TestsTargetConfigList /* Build configuration list for PBXNativeTarget "FluxTests" */;
+			buildPhases = (
+				TestsSourcesPhase /* Sources */,
+				TestsFrameworksPhase /* Frameworks */,
+				TestsResourcesPhase /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				FluxTestsDependency /* PBXTargetDependency */,
+			);
+			name = FluxTests;
+			productName = FluxTests;
+			productReference = FluxTestsProductRef /* FluxTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FluxProject /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 2620;
+			};
+			buildConfigurationList = ProjectConfigList /* Build configuration list for PBXProject "Flux" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = MainGroup;
+			productRefGroup = ProductsGroup /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FluxTarget /* Flux */,
+				FluxTestsTarget /* FluxTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXTargetDependency section */
+		FluxTestsDependency /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FluxTarget /* Flux */;
+			targetProxy = FluxTestsProxy /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXSourcesBuildPhase section */
+		SourcesPhase /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AppStateBuild /* Models/AppState.swift in Sources */,
+				GameBuild /* Models/Game.swift in Sources */,
+				DLLDependencyResolverBuild /* Services/DLLDependencyResolver.swift in Sources */,
+				DLLInjectorBuild /* Services/DLLInjector.swift in Sources */,
+				DependencyMgrBuild /* Services/DependencyManager.swift in Sources */,
+				DeveloperFeedbackBuild /* Services/DeveloperFeedback.swift in Sources */,
+				ExecutionEnvBuild /* Services/ExecutionEnvironment.swift in Sources */,
+				GPTKDetectorBuild /* Services/GPTKDetector.swift in Sources */,
+				GameLauncherBuild /* Services/GameLauncher.swift in Sources */,
+				HexColorPickerBuild /* Services/HexColorPicker.swift in Sources */,
+				LaunchCoordinatorBuild /* Services/LaunchCoordinator.swift in Sources */,
+				LogManagerBuild /* Services/LogManager.swift in Sources */,
+				MetalDetectorBuild /* Services/MetalDeviceDetector.swift in Sources */,
+				PEInspectorBuild /* Services/PEInspector.swift in Sources */,
+				ProcessMonitorBuild /* Services/ProcessMonitor.swift in Sources */,
+				SettingsManagerBuild /* Services/SettingsManager.swift in Sources */,
+				SteamDetectorBuild /* Services/SteamLibraryDetector.swift in Sources */,
+				SystemDetectorBuild /* Services/SystemDetector.swift in Sources */,
+				ThemeExtBuild /* Services/ThemeExtension.swift in Sources */,
+				ThemeManagerBuild /* Services/ThemeManager.swift in Sources */,
+				WineEnvironmentBuilderBuild /* Services/WineEnvironmentBuilder.swift in Sources */,
+				WineDetectorBuild /* Services/WineDetector.swift in Sources */,
+				WineProcessRunnerBuild /* Services/WineProcessRunner.swift in Sources */,
+				WineSmokeTestRunnerBuild /* Services/WineSmokeTestRunner.swift in Sources */,
+				ContentViewBuild /* Views/ContentView.swift in Sources */,
+				DeveloperFeedbackViewBuild /* Views/DeveloperFeedbackView.swift in Sources */,
+				GamesViewBuild /* Views/GamesView.swift in Sources */,
+				LogsViewBuild /* Views/LogsView.swift in Sources */,
+				PrefixesViewBuild /* Views/PrefixesView.swift in Sources */,
+				SettingsViewBuild /* Views/SettingsView.swift in Sources */,
+				SplashViewBuild /* Views/SplashView.swift in Sources */,
+				StartupViewBuild /* Views/StartupView.swift in Sources */,
+				FluxAppBuild /* FluxApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		TestsSourcesPhase /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				LaunchEnvironmentTestsBuild /* Tests/LaunchEnvironmentTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		DebugConfig /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Info.plist;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.efealibel.Flux;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		ReleaseConfig /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Info.plist;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.efealibel.Flux;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		TargetDebugConfig /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				DEAD_CODE_STRIPPING = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.efealibel.Flux;
+			};
+			name = Debug;
+		};
+		TargetReleaseConfig /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				DEAD_CODE_STRIPPING = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.efealibel.Flux;
+			};
+			name = Release;
+		};
+		TestsDebugConfig /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.efealibel.FluxTests;
+				PRODUCT_NAME = FluxTests;
+				SWIFT_VERSION = 5.9;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Flux.app/Contents/MacOS/Flux";
+			};
+			name = Debug;
+		};
+		TestsReleaseConfig /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = Tests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.efealibel.FluxTests;
+				PRODUCT_NAME = FluxTests;
+				SWIFT_VERSION = 5.9;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Flux.app/Contents/MacOS/Flux";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		ProjectConfigList /* Build configuration list for PBXProject "Flux" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DebugConfig /* Debug */,
+				ReleaseConfig /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		TargetConfigList /* Build configuration list for PBXNativeTarget "Flux" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				TargetDebugConfig /* Debug */,
+				TargetReleaseConfig /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		TestsTargetConfigList /* Build configuration list for PBXNativeTarget "FluxTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				TestsDebugConfig /* Debug */,
+				TestsReleaseConfig /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FluxProject /* Project object */;
+}
