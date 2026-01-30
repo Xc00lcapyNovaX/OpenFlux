@@ -153,8 +153,8 @@ final class LaunchCoordinator {
         let prefixPath = settingsManager.getPrefixDirectory() + "-native"
         let wineExe = envManager.getWineExecutablePath(for: .native)
         guard FileManager.default.fileExists(atPath: wineExe) else {
-            appState.error("Wine executable not found for test launch", category: .games)
-            appState.errorMessage = "Install Wine (Homebrew: brew install --cask wine-stable)"
+            appState.setError(
+                .launchWineNotFound, details: "Install via: brew install --cask wine-stable")
             return
         }
 

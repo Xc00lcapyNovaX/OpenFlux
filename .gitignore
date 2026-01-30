@@ -33,3 +33,7 @@ build_output.txt
 
 # User-specific
 .env
+# Documentation (hide AI-generated docs, keep essentials)
+*.md
+!README.md
+!QUICKSTART.md

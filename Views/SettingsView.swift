@@ -75,6 +75,11 @@ struct SettingsView: View {
                     }
                 }
 
+                // Feedback Settings
+                themedSection("💬 Feedback") {
+                    feedbackSettingsSection
+                }
+
                 Spacer()
 
                 // Footer with developer access
@@ -173,6 +178,46 @@ struct SettingsView: View {
                     .background(themeColors.cardBackground)
                     .cornerRadius(8)
                 }
+            }
+
+            Divider()
+                .background(themeColors.secondaryText.opacity(0.2))
+
+            // DPI Scaling
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Text("📐 UI Scale")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(themeColors.text)
+
+                    Spacer()
+
+                    Text("\(Int(settingsManager.uiScale * 100))%")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .foregroundStyle(themeColors.primary)
+                        .frame(width: 45)
+                }
+
+                HStack(spacing: 12) {
+                    Text("75%")
+                        .font(.caption2)
+                        .foregroundStyle(themeColors.secondaryText)
+
+                    Slider(value: $settingsManager.uiScale, in: 0.75...1.5, step: 0.05)
+                        .onChange(of: settingsManager.uiScale) { _ in
+                            settingsManager.save()
+                        }
+
+                    Text("150%")
+                        .font(.caption2)
+                        .foregroundStyle(themeColors.secondaryText)
+                }
+
+                Text("Adjusts the size of UI elements. Restart app for full effect.")
+                    .font(.caption2)
+                    .foregroundStyle(themeColors.secondaryText)
             }
         }
     }
@@ -354,8 +399,6 @@ struct SettingsView: View {
 
             if let systemInfo = appState.systemInfo {
                 HStack(spacing: 8) {
-                    infoBadgeSmall("Steam", systemInfo.steamInstalled ? "✅" : "❌")
-                    infoBadgeSmall("Helper", systemInfo.steamwebhelperRunning ? "✅" : "❌")
                     infoBadgeSmall("x86", systemInfo.x86Support ? "✅" : "❌")
                     infoBadgeSmall("x64", systemInfo.x64Support ? "✅" : "❌")
                 }
@@ -383,6 +426,37 @@ struct SettingsView: View {
             actionButton("📁 Open Prefix Folder", action: openPrefixDirectory)
             actionButton("📋 Open Logs Folder", action: openLogsDirectory)
             actionButton("↺ Reset Settings", action: resetSettings, isDestructive: true)
+        }
+    }
+
+    private var feedbackSettingsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("Feedback Button Position")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(themeColors.text)
+                Spacer()
+            }
+
+            Picker(
+                "Position",
+                selection: Binding(
+                    get: { settingsManager.feedbackButtonPosition },
+                    set: { newValue in
+                        settingsManager.feedbackButtonPosition = newValue
+                        settingsManager.save()
+                    }
+                )
+            ) {
+                Text("Bottom Left").tag("bottomLeft")
+                Text("Bottom Right").tag("bottomRight")
+            }
+            .pickerStyle(.segmented)
+
+            Text("Choose where the feedback button appears in the app")
+                .font(.caption)
+                .foregroundStyle(themeColors.secondaryText)
         }
     }
 

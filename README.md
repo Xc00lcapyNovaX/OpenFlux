@@ -6,7 +6,9 @@ A clean, minimal macOS launcher for running Windows games via Wine, with optiona
 ## Features
 
 - **Steam Game Detection** - Automatically discovers installed Steam games
-- **Open With (.exe/.msi)** - Run Windows executables via Wine (GPTK optional)
+- **Run Button** - Quick access to run any Windows executable from the Dashboard
+- **Finder Integration** - Right-click .exe/.msi/.dll files and "Open With → OpenFlux"
+- **Open With (.exe/.msi/.dll)** - Run Windows executables via Wine (GPTK optional)
 - **Automatic Dependency Handling** - Detects missing DLLs and creates stub DLLs for compatibility
 - **Per-Game GPTK Mode** - Inherit / Enabled / Disabled per title
 - **Targeted Dependency Prompt** - For launcher-like EXEs, probe common runtime components and ask before installing
@@ -14,10 +16,8 @@ A clean, minimal macOS launcher for running Windows games via Wine, with optiona
 - **DLL Injection Support** - Inject mods (e.g., MegaHack v9 Pro) via `~/.flux/dlls/`
 - **Comprehensive Logging** - Real-time logs and categorized system events
 - **Wine Smoke Test** - Validate that Wine can run basic commands from inside OpenFlux
-
-Planned:
-- Dashboard + Recents
-- Steam “Launch Method” toggle (Steam vs direct EXE) per game
+- **Developer Feedback** - Built-in feedback button to send reports to developers
+- **Dashboard with Recents** - View recently launched games and quick actions
 
 ## System Requirements
 
@@ -107,6 +107,21 @@ When an error occurs:
 
 ## Usage
 
+### Running Windows Executables
+
+**Method 1: Dashboard Run Button**
+1. Launch OpenFlux
+2. Go to Dashboard
+3. Click the "Run" button
+4. Select a .exe, .msi, or .dll file from Finder
+5. The game/application will launch with Wine
+
+**Method 2: Finder "Open With"**
+1. Right-click any .exe, .msi, or .dll file in Finder
+2. Select "Open With" → "OpenFlux"
+3. The executable will be launched automatically
+
+**Method 3: Steam Games**
 1. Launch OpenFlux
 2. Games are automatically detected from Steam library
 3. Click a game to select it
@@ -273,6 +288,34 @@ All logs include category for easy filtering:
 - **Settings** - Configuration changes
 - **Services** - Service-level operations
 - **Engine** - Game engine and runtime output
+
+### Error Codes
+
+OpenFlux uses structured error codes for easier debugging:
+
+| Code | Category | Description |
+|------|----------|-------------|
+| OF-L001 | Launch | Wine is not installed |
+| OF-L002 | Launch | Game executable not found |
+| OF-L003 | Launch | Failed to start game process |
+| OF-L004 | Launch | DRM detected - game may not run |
+| OF-L005 | Launch | Wine prefix not found |
+| OF-L006 | Launch | Unsupported architecture (ARM64) |
+| OF-F001 | File | File not found |
+| OF-F002 | File | Cannot access file |
+| OF-F003 | File | Unsupported file type |
+| OF-F004 | File | No executable found in folder |
+| OF-S001 | Steam | Steam not installed |
+| OF-S002 | Steam | Steam library not found |
+| OF-S003 | Steam | Steam game not found |
+| OF-D001 | Dependency | Missing dependency |
+| OF-D002 | Dependency | Dependency installation failed |
+| OF-D003 | Dependency | winetricks not installed |
+| OF-N001 | Network | Failed to send feedback |
+| OF-N002 | Network | Network request timed out |
+| OF-X001 | System | Metal not supported |
+| OF-X002 | System | Game Porting Toolkit not found |
+| OF-X003 | System | Failed to create Wine prefix |
 
 ## License
 

@@ -46,7 +46,8 @@ final class WineSmokeTestRunner {
                 attributes: nil
             )
         } catch {
-            return WineSmokeTestResult(passed: false, summary: "Failed to create temp prefix: \(error)")
+            return WineSmokeTestResult(
+                passed: false, summary: "Failed to create temp prefix: \(error)")
         }
 
         defer {
@@ -56,7 +57,8 @@ final class WineSmokeTestRunner {
         var env = ProcessInfo.processInfo.environment
         env["WINEPREFIX"] = tempPrefix
         if environment == .x86 {
-            env["WINEARCH"] = "win32"
+            // Note: Don't set WINEARCH - wow64 Wine handles both architectures
+            env.removeValue(forKey: "WINEARCH")
         }
         env["WINE"] = wineExe
         if let wineserver {
@@ -80,11 +82,14 @@ final class WineSmokeTestRunner {
             workingDirectory: NSHomeDirectory(),
             timeoutSeconds: 10
         )
-        appState.log("wine --version stdout: \(versionRes.stdout.trimmingCharacters(in: .whitespacesAndNewlines))", category: .games)
+        appState.log(
+            "wine --version stdout: \(versionRes.stdout.trimmingCharacters(in: .whitespacesAndNewlines))",
+            category: .games)
         if versionRes.timedOut || versionRes.exitCode != 0 {
             return WineSmokeTestResult(
                 passed: false,
-                summary: "wine --version failed (exit \(versionRes.exitCode), timedOut=\(versionRes.timedOut))."
+                summary:
+                    "wine --version failed (exit \(versionRes.exitCode), timedOut=\(versionRes.timedOut))."
             )
         }
 
@@ -99,7 +104,8 @@ final class WineSmokeTestRunner {
         if bootRes.timedOut || bootRes.exitCode != 0 {
             return WineSmokeTestResult(
                 passed: false,
-                summary: "wineboot -u failed (exit \(bootRes.exitCode), timedOut=\(bootRes.timedOut))."
+                summary:
+                    "wineboot -u failed (exit \(bootRes.exitCode), timedOut=\(bootRes.timedOut))."
             )
         }
 
@@ -116,13 +122,16 @@ final class WineSmokeTestRunner {
         if cmdRes.timedOut || cmdRes.exitCode != 0 || !stdout.contains(marker) {
             return WineSmokeTestResult(
                 passed: false,
-                summary: "cmd /c echo failed (exit \(cmdRes.exitCode), timedOut=\(cmdRes.timedOut))."
+                summary:
+                    "cmd /c echo failed (exit \(cmdRes.exitCode), timedOut=\(cmdRes.timedOut))."
             )
         }
 
         // If user has GPTK enabled globally, provide a hint (but don't fail the Wine smoke test).
         if settingsManager.useGPTK {
-            appState.log("Note: GPTK is enabled in Settings; smoke test validated Wine without GPTK.", category: .games)
+            appState.log(
+                "Note: GPTK is enabled in Settings; smoke test validated Wine without GPTK.",
+                category: .games)
         }
 
         return WineSmokeTestResult(
@@ -131,4 +140,3 @@ final class WineSmokeTestRunner {
         )
     }
 }
-

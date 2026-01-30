@@ -127,7 +127,6 @@ class SystemDetector {
         let launcherVersions = detectLaunchers()
         let mods = detectMods()
         let metalGPU = detectMetalGPU()
-        let steamwebhelper = checkSteamwebhelper()
         let (updateAvailable, updateDetails) = checkForUpdates()
 
         let info = SystemInfo(
@@ -139,7 +138,7 @@ class SystemDetector {
             metalSupport: metalGPU != nil,
             updateAvailable: updateAvailable,
             updateDetails: updateDetails,
-            steamwebhelperRunning: steamwebhelper,
+            steamwebhelperRunning: false,
             x64Support: checkArchSupport(.x64),
             x86Support: checkArchSupport(.x86)
         )
@@ -429,7 +428,6 @@ class SystemDetector {
             STEAM STATUS:
             • Installed: \(info.steamInstalled ? "✅ Yes" : "❌ No")
             • Version: \(info.steamVersion ?? "Unknown")
-            • Steamwebhelper: \(info.steamwebhelperRunning ? "✅ Running" : "❌ Not Running")
 
             GAME LAUNCHERS:
             """

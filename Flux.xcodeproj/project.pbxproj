@@ -6,17 +6,8 @@
 	objectVersion = 56;
 	objects = {
 
-/* Begin PBXContainerItemProxy section */
-		FluxTestsProxy /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = FluxProject /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = FluxTarget;
-			remoteInfo = Flux;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXBuildFile section */
+		7F3EB41A2F2C0D98001FB772 /* README 2.md in Resources */ = {isa = PBXBuildFile; fileRef = 7F3EB4192F2C0D98001FB772 /* README 2.md */; };
 		AppStateBuild /* Models/AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AppStateRef /* Models/AppState.swift */; };
 		ContentViewBuild /* Views/ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ContentViewRef /* Views/ContentView.swift */; };
 		DLLDependencyResolverBuild /* Services/DLLDependencyResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DLLDependencyResolverRef /* Services/DLLDependencyResolver.swift */; };
@@ -26,18 +17,17 @@
 		DeveloperFeedbackViewBuild /* Views/DeveloperFeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DeveloperFeedbackViewRef /* Views/DeveloperFeedbackView.swift */; };
 		ExecutionEnvBuild /* Services/ExecutionEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = ExecutionEnvRef /* Services/ExecutionEnvironment.swift */; };
 		FluxAppBuild /* FluxApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FluxAppRef /* FluxApp.swift */; };
-		LaunchEnvironmentTestsBuild /* Tests/LaunchEnvironmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = LaunchEnvironmentTestsRef /* Tests/LaunchEnvironmentTests.swift */; };
-		XCTestFrameworkBuild /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XCTestFrameworkRef /* XCTest.framework */; };
-		OpenFluxIconBuild /* OpenFlux.icns in Resources */ = {isa = PBXBuildFile; fileRef = OpenFluxIconRef /* OpenFlux.icns */; };
 		GPTKDetectorBuild /* Services/GPTKDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = GPTKDetectorRef /* Services/GPTKDetector.swift */; };
 		GameBuild /* Models/Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = GameRef /* Models/Game.swift */; };
 		GameLauncherBuild /* Services/GameLauncher.swift in Sources */ = {isa = PBXBuildFile; fileRef = GameLauncherRef /* Services/GameLauncher.swift */; };
 		GamesViewBuild /* Views/GamesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = GamesViewRef /* Views/GamesView.swift */; };
 		HexColorPickerBuild /* Services/HexColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = HexColorPickerRef /* Services/HexColorPicker.swift */; };
 		LaunchCoordinatorBuild /* Services/LaunchCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = LaunchCoordinatorRef /* Services/LaunchCoordinator.swift */; };
+		LaunchEnvironmentTestsBuild /* Tests/LaunchEnvironmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = LaunchEnvironmentTestsRef /* Tests/LaunchEnvironmentTests.swift */; };
 		LogManagerBuild /* Services/LogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = LogManagerRef /* Services/LogManager.swift */; };
 		LogsViewBuild /* Views/LogsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = LogsViewRef /* Views/LogsView.swift */; };
 		MetalDetectorBuild /* Services/MetalDeviceDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = MetalDetectorRef /* Services/MetalDeviceDetector.swift */; };
+		OpenFluxIconBuild /* OpenFlux.icns in Resources */ = {isa = PBXBuildFile; fileRef = OpenFluxIconRef /* OpenFlux.icns */; };
 		PEInspectorBuild /* Services/PEInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = PEInspectorRef /* Services/PEInspector.swift */; };
 		PrefixesViewBuild /* Views/PrefixesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PrefixesViewRef /* Views/PrefixesView.swift */; };
 		ProcessMonitorBuild /* Services/ProcessMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ProcessMonitorRef /* Services/ProcessMonitor.swift */; };
@@ -49,13 +39,25 @@
 		SystemDetectorBuild /* Services/SystemDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = SystemDetectorRef /* Services/SystemDetector.swift */; };
 		ThemeExtBuild /* Services/ThemeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ThemeExtRef /* Services/ThemeExtension.swift */; };
 		ThemeManagerBuild /* Services/ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ThemeManagerRef /* Services/ThemeManager.swift */; };
-		WineEnvironmentBuilderBuild /* Services/WineEnvironmentBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = WineEnvironmentBuilderRef /* Services/WineEnvironmentBuilder.swift */; };
 		WineDetectorBuild /* Services/WineDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = WineDetectorRef /* Services/WineDetector.swift */; };
+		WineEnvironmentBuilderBuild /* Services/WineEnvironmentBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = WineEnvironmentBuilderRef /* Services/WineEnvironmentBuilder.swift */; };
 		WineProcessRunnerBuild /* Services/WineProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = WineProcessRunnerRef /* Services/WineProcessRunner.swift */; };
 		WineSmokeTestRunnerBuild /* Services/WineSmokeTestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = WineSmokeTestRunnerRef /* Services/WineSmokeTestRunner.swift */; };
+		XCTestFrameworkBuild /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XCTestFrameworkRef /* XCTest.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		FluxTestsProxy /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FluxProject /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FluxTarget;
+			remoteInfo = Flux;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
+		7F3EB4192F2C0D98001FB772 /* README 2.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "README 2.md"; sourceTree = "<group>"; };
 		AppStateRef /* Models/AppState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Models/AppState.swift; sourceTree = "<group>"; };
 		ContentViewRef /* Views/ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/ContentView.swift; sourceTree = "<group>"; };
 		DLLDependencyResolverRef /* Services/DLLDependencyResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/DLLDependencyResolver.swift; sourceTree = "<group>"; };
@@ -65,37 +67,37 @@
 		DeveloperFeedbackViewRef /* Views/DeveloperFeedbackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/DeveloperFeedbackView.swift; sourceTree = "<group>"; };
 		ExecutionEnvRef /* Services/ExecutionEnvironment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/ExecutionEnvironment.swift; sourceTree = "<group>"; };
 		FluxAppRef /* FluxApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FluxApp.swift; sourceTree = "<group>"; };
+		FluxTestsProductRef /* FluxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FluxTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		GPTKDetectorRef /* Services/GPTKDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/GPTKDetector.swift; sourceTree = "<group>"; };
 		GameLauncherRef /* Services/GameLauncher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/GameLauncher.swift; sourceTree = "<group>"; };
 		GameRef /* Models/Game.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Models/Game.swift; sourceTree = "<group>"; };
 		GamesViewRef /* Views/GamesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/GamesView.swift; sourceTree = "<group>"; };
 		HexColorPickerRef /* Services/HexColorPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/HexColorPicker.swift; sourceTree = "<group>"; };
 		InfoRef /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		LaunchEnvironmentTestsRef /* Tests/LaunchEnvironmentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tests/LaunchEnvironmentTests.swift; sourceTree = "<group>"; };
-		TestsInfoPlistRef /* Tests/Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tests/Info.plist; sourceTree = "<group>"; };
-		FluxTestsProductRef /* FluxTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FluxTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		XCTestFrameworkRef /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
 		LaunchCoordinatorRef /* Services/LaunchCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/LaunchCoordinator.swift; sourceTree = "<group>"; };
+		LaunchEnvironmentTestsRef /* Tests/LaunchEnvironmentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tests/LaunchEnvironmentTests.swift; sourceTree = "<group>"; };
 		LogManagerRef /* Services/LogManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/LogManager.swift; sourceTree = "<group>"; };
 		LogsViewRef /* Views/LogsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/LogsView.swift; sourceTree = "<group>"; };
 		MetalDetectorRef /* Services/MetalDeviceDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/MetalDeviceDetector.swift; sourceTree = "<group>"; };
+		OpenFluxIconRef /* OpenFlux.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = OpenFlux.icns; sourceTree = "<group>"; };
 		PEInspectorRef /* Services/PEInspector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/PEInspector.swift; sourceTree = "<group>"; };
 		PrefixesViewRef /* Views/PrefixesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/PrefixesView.swift; sourceTree = "<group>"; };
 		ProcessMonitorRef /* Services/ProcessMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/ProcessMonitor.swift; sourceTree = "<group>"; };
 		ProductRef /* Flux.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flux.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		OpenFluxIconRef /* OpenFlux.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = OpenFlux.icns; sourceTree = "<group>"; };
 		SettingsManagerRef /* Services/SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/SettingsManager.swift; sourceTree = "<group>"; };
 		SettingsViewRef /* Views/SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/SettingsView.swift; sourceTree = "<group>"; };
 		SplashViewRef /* Views/SplashView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/SplashView.swift; sourceTree = "<group>"; };
 		StartupViewRef /* Views/StartupView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/StartupView.swift; sourceTree = "<group>"; };
 		SteamDetectorRef /* Services/SteamLibraryDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/SteamLibraryDetector.swift; sourceTree = "<group>"; };
 		SystemDetectorRef /* Services/SystemDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/SystemDetector.swift; sourceTree = "<group>"; };
+		TestsInfoPlistRef /* Tests/Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tests/Info.plist; sourceTree = "<group>"; };
 		ThemeExtRef /* Services/ThemeExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/ThemeExtension.swift; sourceTree = "<group>"; };
 		ThemeManagerRef /* Services/ThemeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/ThemeManager.swift; sourceTree = "<group>"; };
-		WineEnvironmentBuilderRef /* Services/WineEnvironmentBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/WineEnvironmentBuilder.swift; sourceTree = "<group>"; };
 		WineDetectorRef /* Services/WineDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/WineDetector.swift; sourceTree = "<group>"; };
+		WineEnvironmentBuilderRef /* Services/WineEnvironmentBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/WineEnvironmentBuilder.swift; sourceTree = "<group>"; };
 		WineProcessRunnerRef /* Services/WineProcessRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/WineProcessRunner.swift; sourceTree = "<group>"; };
 		WineSmokeTestRunnerRef /* Services/WineSmokeTestRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/WineSmokeTestRunner.swift; sourceTree = "<group>"; };
+		XCTestFrameworkRef /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,25 +118,15 @@
 		};
 /* End PBXFrameworksBuildPhase section */
 
-/* Begin PBXResourcesBuildPhase section */
-		ResourcesPhase /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				OpenFluxIconBuild /* OpenFlux.icns in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		TestsResourcesPhase /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
 /* Begin PBXGroup section */
+		FrameworksGroup /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				XCTestFrameworkRef /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		MainGroup = {
 			isa = PBXGroup;
 			children = (
@@ -146,24 +138,8 @@
 				TestsGroup /* Tests */,
 				ViewsGroup /* Views */,
 				FrameworksGroup /* Frameworks */,
+				7F3EB4192F2C0D98001FB772 /* README 2.md */,
 			);
-			sourceTree = "<group>";
-		};
-		FrameworksGroup /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				XCTestFrameworkRef /* XCTest.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		TestsGroup /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				LaunchEnvironmentTestsRef /* Tests/LaunchEnvironmentTests.swift */,
-				TestsInfoPlistRef /* Tests/Info.plist */,
-			);
-			name = Tests;
 			sourceTree = "<group>";
 		};
 		ModelsGroup /* Models */ = {
@@ -213,6 +189,15 @@
 			name = Services;
 			sourceTree = "<group>";
 		};
+		TestsGroup /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				LaunchEnvironmentTestsRef /* Tests/LaunchEnvironmentTests.swift */,
+				TestsInfoPlistRef /* Tests/Info.plist */,
+			);
+			name = Tests;
+			sourceTree = "<group>";
+		};
 		ViewsGroup /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -244,7 +229,7 @@
 			dependencies = (
 			);
 			name = Flux;
-			productName = Flux;
+			productName = OpenFlux;
 			productReference = ProductRef /* Flux.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -295,13 +280,24 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXTargetDependency section */
-		FluxTestsDependency /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = FluxTarget /* Flux */;
-			targetProxy = FluxTestsProxy /* PBXContainerItemProxy */;
+/* Begin PBXResourcesBuildPhase section */
+		ResourcesPhase /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7F3EB41A2F2C0D98001FB772 /* README 2.md in Resources */,
+				OpenFluxIconBuild /* OpenFlux.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
-/* End PBXTargetDependency section */
+		TestsResourcesPhase /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		SourcesPhase /* Sources */ = {
@@ -353,6 +349,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FluxTestsDependency /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FluxTarget /* Flux */;
+			targetProxy = FluxTestsProxy /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		DebugConfig /* Debug */ = {
@@ -457,7 +461,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.efealibel.Flux;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = OpenFlux;
 				SDKROOT = macosx;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -489,7 +493,11 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.efealibel.FluxTests;
 				PRODUCT_NAME = FluxTests;
@@ -503,7 +511,11 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = Tests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.efealibel.FluxTests;
 				PRODUCT_NAME = FluxTests;

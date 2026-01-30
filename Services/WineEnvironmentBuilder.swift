@@ -77,9 +77,9 @@ final class WineEnvironmentBuilder {
         var environment = base
 
         environment["WINEPREFIX"] = prefixPath
-        if executionEnvironment == .x86 {
-            environment["WINEARCH"] = "win32"
-        }
+        // Note: Don't set WINEARCH - modern Wine (wow64 mode) handles both 32/64-bit
+        // Setting WINEARCH=win32 breaks wow64 Wine installations
+        environment.removeValue(forKey: "WINEARCH")
         environment["WINE"] = wineExecutable
         if let wineserverPath {
             environment["WINESERVER"] = wineserverPath

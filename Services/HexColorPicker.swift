@@ -23,16 +23,21 @@ struct HexColorPicker {
     /// Convert Color to hex string
     static func colorToHex(_ color: Color) -> String {
         let nsColor = NSColor(color)
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
 
-        nsColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        // Safely convert to RGB colorspace to avoid crash
+        guard let rgbColor = nsColor.usingColorSpace(.sRGB) else {
+            // Fallback: try to get components directly
+            let components = nsColor.cgColor.components ?? [0, 0, 0, 1]
+            let red = components.count > 0 ? components[0] : 0
+            let green = components.count > 1 ? components[1] : 0
+            let blue = components.count > 2 ? components[2] : 0
+            return String(
+                format: "#%02X%02X%02X", Int(red * 255), Int(green * 255), Int(blue * 255))
+        }
 
-        let redInt = Int(red * 255)
-        let greenInt = Int(green * 255)
-        let blueInt = Int(blue * 255)
+        let redInt = Int(rgbColor.redComponent * 255)
+        let greenInt = Int(rgbColor.greenComponent * 255)
+        let blueInt = Int(rgbColor.blueComponent * 255)
 
         return String(format: "#%02X%02X%02X", redInt, greenInt, blueInt)
     }
@@ -40,16 +45,19 @@ struct HexColorPicker {
     /// Get RGB components as strings
     static func getRGBComponents(_ color: Color) -> (r: String, g: String, b: String) {
         let nsColor = NSColor(color)
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
 
-        nsColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        // Safely convert to RGB colorspace to avoid crash
+        guard let rgbColor = nsColor.usingColorSpace(.sRGB) else {
+            let components = nsColor.cgColor.components ?? [0, 0, 0, 1]
+            let red = components.count > 0 ? Int(components[0] * 255) : 0
+            let green = components.count > 1 ? Int(components[1] * 255) : 0
+            let blue = components.count > 2 ? Int(components[2] * 255) : 0
+            return (r: String(red), g: String(green), b: String(blue))
+        }
 
-        let redInt = Int(red * 255)
-        let greenInt = Int(green * 255)
-        let blueInt = Int(blue * 255)
+        let redInt = Int(rgbColor.redComponent * 255)
+        let greenInt = Int(rgbColor.greenComponent * 255)
+        let blueInt = Int(rgbColor.blueComponent * 255)
 
         return (
             r: String(redInt),
@@ -61,14 +69,20 @@ struct HexColorPicker {
     /// Get RGB components as doubles (0-1 range)
     static func getRGBDouble(_ color: Color) -> (r: Double, g: Double, b: Double) {
         let nsColor = NSColor(color)
-        var red: CGFloat = 0
-        var green: CGFloat = 0
-        var blue: CGFloat = 0
-        var alpha: CGFloat = 0
 
-        nsColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        // Safely convert to RGB colorspace to avoid crash
+        guard let rgbColor = nsColor.usingColorSpace(.sRGB) else {
+            let components = nsColor.cgColor.components ?? [0, 0, 0, 1]
+            let red = components.count > 0 ? Double(components[0]) : 0
+            let green = components.count > 1 ? Double(components[1]) : 0
+            let blue = components.count > 2 ? Double(components[2]) : 0
+            return (r: red, g: green, b: blue)
+        }
 
-        return (r: Double(red), g: Double(green), b: Double(blue))
+        return (
+            r: Double(rgbColor.redComponent), g: Double(rgbColor.greenComponent),
+            b: Double(rgbColor.blueComponent)
+        )
     }
 
     /// Create color from RGB (0-255 range)

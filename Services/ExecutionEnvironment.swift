@@ -7,7 +7,7 @@ enum ExecutionEnvironment: String, Codable, CaseIterable {
     // - .x86: 32-bit (win32) prefix
     case native = "Native"
     case x86 = "x86"
-    
+
     var displayName: String {
         switch self {
         case .native:
@@ -16,7 +16,7 @@ enum ExecutionEnvironment: String, Codable, CaseIterable {
             return "x86 (32-bit)"
         }
     }
-    
+
     var description: String {
         switch self {
         case .native:
@@ -25,7 +25,7 @@ enum ExecutionEnvironment: String, Codable, CaseIterable {
             return "32-bit Wine prefix (win32); use for legacy 32-bit apps and installers"
         }
     }
-    
+
     var icon: String {
         switch self {
         case .native:
@@ -34,7 +34,7 @@ enum ExecutionEnvironment: String, Codable, CaseIterable {
             return "🧱"  // Brick for legacy/32-bit
         }
     }
-    
+
     var color: String {
         switch self {
         case .native:
@@ -50,58 +50,42 @@ class AppEnvironmentManager {
     private let appState = AppState.shared
     private let settingsManager = SettingsManager.shared
     private let wineDetector = WineDetector.shared
-    
-    // Environment prefixes
-    private let nativePrefixPath: String
-    private let x86PrefixPath: String
-    
+
+    // Unified prefix - wow64 Wine handles both 32-bit and 64-bit
+    private let unifiedPrefixPath: String
+
     static let shared = AppEnvironmentManager()
-    
+
     init() {
-        let basePrefix = settingsManager.getPrefixDirectory()
-        self.nativePrefixPath = basePrefix + "-native"
-        self.x86PrefixPath = basePrefix + "-x86"
-        
+        // Use single unified prefix - wow64 Wine supports both architectures
+        self.unifiedPrefixPath = settingsManager.getPrefixDirectory()
+
         setupEnvironments()
     }
-    
-    /// Setup separate Wine prefixes for each environment
+
+    /// Setup Wine prefix (unified for wow64)
     private func setupEnvironments() {
         let fileManager = FileManager.default
-        
-        // Ensure native prefix exists
-        if !fileManager.fileExists(atPath: nativePrefixPath) {
+
+        // Ensure unified prefix exists
+        if !fileManager.fileExists(atPath: unifiedPrefixPath) {
             do {
-                try fileManager.createDirectory(atPath: nativePrefixPath, 
-                                               withIntermediateDirectories: true)
-                appState.debug("Created native prefix: \(nativePrefixPath)", category: .environment)
+                try fileManager.createDirectory(
+                    atPath: unifiedPrefixPath,
+                    withIntermediateDirectories: true)
+                appState.debug("Created Wine prefix: \(unifiedPrefixPath)", category: .environment)
             } catch {
-                appState.error("Failed to create native prefix: \(error)", category: .environment)
-            }
-        }
-        
-        // Ensure x86 prefix exists
-        if !fileManager.fileExists(atPath: x86PrefixPath) {
-            do {
-                try fileManager.createDirectory(atPath: x86PrefixPath, 
-                                               withIntermediateDirectories: true)
-                appState.debug("Created x86 prefix: \(x86PrefixPath)", category: .environment)
-            } catch {
-                appState.error("Failed to create x86 prefix: \(error)", category: .environment)
+                appState.error("Failed to create Wine prefix: \(error)", category: .environment)
             }
         }
     }
-    
-    /// Get Wine prefix for environment
+
+    /// Get Wine prefix for environment (unified for wow64)
     func getPrefixPath(for environment: ExecutionEnvironment) -> String {
-        switch environment {
-        case .native:
-            return nativePrefixPath
-        case .x86:
-            return x86PrefixPath
-        }
+        // wow64 Wine uses single prefix for both architectures
+        return unifiedPrefixPath
     }
-    
+
     /// Get wine executable path for environment (ARM uses `wine`, not wine64)
     func getWineExecutablePath(for environment: ExecutionEnvironment) -> String {
         if let detected = wineDetector.wineExecutablePath {
@@ -113,27 +97,27 @@ class AppEnvironmentManager {
         let winePath = wineDir + "/bin/wine"
         return winePath
     }
-    
+
     /// Check if environment is properly configured
     func isEnvironmentAvailable(_ environment: ExecutionEnvironment) -> Bool {
         let prefixPath = getPrefixPath(for: environment)
         let wineExe = getWineExecutablePath(for: environment)
-        
-        return FileManager.default.fileExists(atPath: prefixPath) &&
-               FileManager.default.fileExists(atPath: wineExe)
+
+        return FileManager.default.fileExists(atPath: prefixPath)
+            && FileManager.default.fileExists(atPath: wineExe)
     }
-    
+
     /// Get all available environments
     func availableEnvironments() -> [ExecutionEnvironment] {
         return ExecutionEnvironment.allCases.filter { isEnvironmentAvailable($0) }
     }
-    
+
     /// Log environment status
     func logEnvironmentStatus() {
         appState.log("═══════════════════════════════════════════", category: .environment)
         appState.log("Execution Environments Available:", category: .environment)
         appState.log("═══════════════════════════════════════════", category: .environment)
-        
+
         for env in ExecutionEnvironment.allCases {
             let status = isEnvironmentAvailable(env) ? "✓" : "✗"
             let prefix = getPrefixPath(for: env)

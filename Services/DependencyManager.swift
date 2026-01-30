@@ -39,20 +39,27 @@ class DependencyManager {
     }
 
     private let runtimeComponents = [
-        ("DirectX 9 Runtime", "d3dx9_43.dll", "Installs d3dx9 runtime components into the Wine prefix."),
-        ("XInput Runtime", "xinput1_3.dll", "Installs xinput runtime components into the Wine prefix."),
+        (
+            "DirectX 9 Runtime", "d3dx9_43.dll",
+            "Installs d3dx9 runtime components into the Wine prefix."
+        ),
+        (
+            "XInput Runtime", "xinput1_3.dll",
+            "Installs xinput runtime components into the Wine prefix."
+        ),
         ("XAudio 2.7", "xaudio2_7.dll", "Installs legacy XAudio runtime into the Wine prefix."),
     ]
 
     private let graphicsComponents = [
-        ("DXVK Configuration", "dxvk_config.dll", "Optional DXVK runtime for DirectX translation."),
+        ("DXVK Configuration", "dxvk_config.dll", "Optional DXVK runtime for DirectX translation.")
     ]
 
     private let gameFileComponents = [
-        ("Steam API (64-bit)", "steam_api64.dll",
-         "Required for Steam games when launching directly (not bundled)."),
+        (
+            "Steam API (64-bit)", "steam_api64.dll",
+            "Required for Steam games when launching directly (not bundled)."
+        )
     ]
-
 
     func checkDependencies(for game: Game) -> [String] {
         let report = dependencyReport(for: game)
@@ -83,7 +90,8 @@ class DependencyManager {
             }
         }
 
-        let steamGameLikely = game.isSteamGame
+        let steamGameLikely =
+            game.isSteamGame
             || game.installPath.lowercased().contains("steamapps")
 
         for component in gameFileComponents {
@@ -128,7 +136,8 @@ class DependencyManager {
     ) {
         let game = report.game
         appState.log("Installing dependencies for \(game.name)...", category: .dependencies)
-        appState.log("Environment: \(game.executionEnvironment.displayName)", category: .dependencies)
+        appState.log(
+            "Environment: \(game.executionEnvironment.displayName)", category: .dependencies)
 
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self = self else {
@@ -157,7 +166,8 @@ class DependencyManager {
                     prefix: prefixPath,
                     environment: game.executionEnvironment
                 ) {
-                    appState.warning("Failed to install runtime components", category: .dependencies)
+                    appState.warning(
+                        "Failed to install runtime components", category: .dependencies)
                     success = false
                 }
             }
@@ -183,7 +193,8 @@ class DependencyManager {
                         prefix: prefixPath,
                         environment: game.executionEnvironment
                     ) {
-                        appState.warning("Failed to install graphics backend", category: .dependencies)
+                        appState.warning(
+                            "Failed to install graphics backend", category: .dependencies)
                         success = false
                     }
                 }
@@ -201,12 +212,39 @@ class DependencyManager {
         }
     }
 
+    /// Check if winetricks is installed
+    private func isWinetricksInstalled() -> Bool {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/bin/which")
+        process.arguments = ["winetricks"]
+        process.standardOutput = Pipe()
+        process.standardError = Pipe()
+
+        do {
+            try process.run()
+            process.waitUntilExit()
+            return process.terminationStatus == 0
+        } catch {
+            return false
+        }
+    }
+
     /// Install components via winetricks
     private func installViaWinetricks(
         _ components: [String],
         prefix: String,
         environment: ExecutionEnvironment
     ) -> Bool {
+        // Check if winetricks is installed first
+        guard isWinetricksInstalled() else {
+            appState.setError(.winetricksNotFound, details: "Install via: brew install winetricks")
+            appState.warning(
+                "Skipping dependency installation - winetricks required",
+                category: .dependencies
+            )
+            return false
+        }
+
         let wineExePath = AppEnvironmentManager.shared.getWineExecutablePath(for: environment)
 
         for component in components {
@@ -278,7 +316,8 @@ class DependencyManager {
         }
 
         let candidates = [
-            installPath + "/_CommonRedist/Steamworks Shared/_CommonRedist/redistributable_bin/steam_api64.dll",
+            installPath
+                + "/_CommonRedist/Steamworks Shared/_CommonRedist/redistributable_bin/steam_api64.dll",
             installPath + "/_CommonRedist/Steamworks Shared/redistributable_bin/steam_api64.dll",
             installPath + "/_CommonRedist/Steamworks Shared/steam_api64.dll",
         ]
@@ -289,7 +328,8 @@ class DependencyManager {
                 appState.debug("Copied steam_api64.dll from \(source)", category: .dependencies)
                 return true
             } catch {
-                appState.warning("Failed to copy steam_api64.dll: \(error)", category: .dependencies)
+                appState.warning(
+                    "Failed to copy steam_api64.dll: \(error)", category: .dependencies)
                 return false
             }
         }

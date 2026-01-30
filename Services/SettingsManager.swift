@@ -16,6 +16,8 @@ class SettingsManager: ObservableObject {
     @Published var launchMethodOverrides: [String: String] = [:]
     @Published var gptkModeOverrides: [String: String] = [:]
     @Published var graphicsAPIOverrides: [String: String] = [:]
+    @Published var feedbackButtonPosition: String = "bottomLeft"  // "bottomLeft" or "bottomRight"
+    @Published var uiScale: Double = 1.0  // DPI scaling factor (0.75 to 1.5)
 
     private let defaults = UserDefaults.standard
     private let prefix = "com.flux."
@@ -64,6 +66,24 @@ class SettingsManager: ObservableObject {
             graphicsAPIOverrides = [:]
         }
 
+        // Migrate old feedback position values to new ones
+        let savedPosition = defaults.string(forKey: prefix + "feedbackButtonPosition")
+        if savedPosition == "topLeft" || savedPosition == "topRight" {
+            feedbackButtonPosition = "bottomLeft"
+            defaults.set("bottomLeft", forKey: prefix + "feedbackButtonPosition")
+        } else {
+            feedbackButtonPosition = savedPosition ?? "bottomLeft"
+        }
+
+        // Load UI scale (default 1.0)
+        if defaults.object(forKey: prefix + "uiScale") != nil {
+            uiScale = defaults.double(forKey: prefix + "uiScale")
+            // Clamp to valid range
+            uiScale = max(0.75, min(1.5, uiScale))
+        } else {
+            uiScale = 1.0
+        }
+
         setupDirectories()
     }
 
@@ -103,6 +123,8 @@ class SettingsManager: ObservableObject {
         if let data = try? JSONEncoder().encode(graphicsAPIOverrides) {
             defaults.set(data, forKey: prefix + "graphicsAPIOverrides")
         }
+        defaults.set(feedbackButtonPosition, forKey: prefix + "feedbackButtonPosition")
+        defaults.set(uiScale, forKey: prefix + "uiScale")
         defaults.synchronize()
     }
 

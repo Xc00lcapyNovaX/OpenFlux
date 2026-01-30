@@ -5,6 +5,80 @@ import Foundation
 /// Owns logs, services, system info, and runtime state.
 /// Everything flows through here.
 class AppState: ObservableObject {
+    // MARK: - Error Codes
+
+    /// OpenFlux Error Codes for debugging and support
+    enum ErrorCode: String {
+        // Launch Errors (OF-L0XX)
+        case launchWineNotFound = "OF-L001"
+        case launchExecutableNotFound = "OF-L002"
+        case launchProcessFailed = "OF-L003"
+        case launchDRMDetected = "OF-L004"
+        case launchPrefixMissing = "OF-L005"
+        case launchUnsupportedArch = "OF-L006"
+
+        // File Errors (OF-F0XX)
+        case fileNotFound = "OF-F001"
+        case fileAccessDenied = "OF-F002"
+        case fileUnsupportedType = "OF-F003"
+        case fileNoExecutable = "OF-F004"
+
+        // Steam Errors (OF-S0XX)
+        case steamNotInstalled = "OF-S001"
+        case steamLibraryNotFound = "OF-S002"
+        case steamGameNotFound = "OF-S003"
+
+        // Dependency Errors (OF-D0XX)
+        case dependencyMissing = "OF-D001"
+        case dependencyInstallFailed = "OF-D002"
+        case winetricksNotFound = "OF-D003"
+
+        // Network Errors (OF-N0XX)
+        case networkFeedbackFailed = "OF-N001"
+        case networkTimeout = "OF-N002"
+
+        // System Errors (OF-X0XX)
+        case systemMetalNotSupported = "OF-X001"
+        case systemGPTKNotFound = "OF-X002"
+        case systemPrefixCreationFailed = "OF-X003"
+
+        var description: String {
+            switch self {
+            case .launchWineNotFound: return "Wine is not installed"
+            case .launchExecutableNotFound: return "Game executable not found"
+            case .launchProcessFailed: return "Failed to start game process"
+            case .launchDRMDetected: return "DRM detected - game may not run"
+            case .launchPrefixMissing: return "Wine prefix not found"
+            case .launchUnsupportedArch: return "Unsupported architecture"
+            case .fileNotFound: return "File not found"
+            case .fileAccessDenied: return "Cannot access file"
+            case .fileUnsupportedType: return "Unsupported file type"
+            case .fileNoExecutable: return "No executable found"
+            case .steamNotInstalled: return "Steam not installed"
+            case .steamLibraryNotFound: return "Steam library not found"
+            case .steamGameNotFound: return "Steam game not found"
+            case .dependencyMissing: return "Missing dependency"
+            case .dependencyInstallFailed: return "Dependency installation failed"
+            case .winetricksNotFound: return "winetricks not installed"
+            case .networkFeedbackFailed: return "Failed to send feedback"
+            case .networkTimeout: return "Network request timed out"
+            case .systemMetalNotSupported: return "Metal not supported"
+            case .systemGPTKNotFound: return "Game Porting Toolkit not found"
+            case .systemPrefixCreationFailed: return "Failed to create Wine prefix"
+            }
+        }
+    }
+
+    /// Set error with code
+    func setError(_ code: ErrorCode, details: String? = nil) {
+        let message =
+            details != nil
+            ? "[\(code.rawValue)] \(code.description): \(details!)"
+            : "[\(code.rawValue)] \(code.description)"
+        errorMessage = message
+        error(message, category: .engine)
+    }
+
     // MARK: - Logging (formerly LogManager)
     @Published var logs: [LogEntry] = []
 
@@ -87,14 +161,15 @@ class AppState: ObservableObject {
     @Published var activePatchNotes: PatchNotesEntry?
 
     private let latestPatchNotes = PatchNotesEntry(
-        version: "0.1.0",
-        date: "Jan 28, 2026",
+        version: "1.0.1",
+        date: "Jan 30, 2026",
         highlights: [
-            "🎮 Welcome to OpenFlux - Windows game compatibility for macOS!",
-            "✨ Streamlined onboarding with launcher selection",
-            "🚀 Built on Apple's Game Porting Toolkit for native performance",
-            "🎨 Beautiful dark/light theme support",
-            "📊 Real-time logging and system detection",
+            "🎮 First stable release of OpenFlux!",
+            "▶️ Run button on Dashboard - launch any .exe directly",
+            "📧 Developer feedback system with Formspree integration",
+            "🎨 UI Scale slider (75%-150%) for accessibility",
+            "🔧 Fixed wow64 Wine compatibility for modern Homebrew Wine",
+            "📋 Comprehensive error codes for troubleshooting",
         ]
     )
 
@@ -290,13 +365,6 @@ class AppState: ObservableObject {
                     self.warning(self.updateMessage ?? "", category: .engine)
                 }
 
-                // Alert if steamwebhelper not running
-                if !info.steamwebhelperRunning && info.steamInstalled {
-                    self.errorMessage =
-                        "⚠️ Steam's steamwebhelper not running. Steam integration may be limited."
-                    self.warning("steamwebhelper not running", category: .engine)
-                }
-
                 self.developerFeedback.logProcess(
                     "SystemDetector",
                     action: "System scan complete",
@@ -361,7 +429,8 @@ class AppState: ObservableObject {
                 DispatchQueue.main.async {
                     self.games = []
                     self.isLoading = false
-                    self.errorMessage = "Could not detect Steam installation"
+                    self.setError(
+                        .steamNotInstalled, details: "Make sure Steam is installed and has games")
                 }
             }
         }
@@ -374,7 +443,7 @@ class AppState: ObservableObject {
 
         // Warn about DRM
         if game.hasDRMWarning {
-            errorMessage = "⚠️ DRM detected - game may not run properly"
+            setError(.launchDRMDetected, details: game.name)
             developerFeedback.logProcess("GameLauncher", action: "DRM warning", details: game.name)
         }
 
@@ -444,10 +513,8 @@ class AppState: ObservableObject {
                     self?.launcher.launch(report.game)
                 }
             } else {
-                self.markLaunchFailed(
-                    report.game,
-                    message: "Failed to install required dependencies. Check logs for details."
-                )
+                self.setError(.dependencyInstallFailed, details: "Check logs for details")
+                self.lastFailedLaunch = report.game
             }
         }
     }
@@ -602,14 +669,15 @@ class AppState: ObservableObject {
             if let exeURL = findExecutable(in: url) {
                 resolvedURL = exeURL
             } else {
-                errorMessage = "No executable found in folder."
+                setError(.fileNoExecutable, details: url.lastPathComponent)
                 return
             }
         }
 
         let path = resolvedURL.path
-        guard path.lowercased().hasSuffix(".exe") || path.lowercased().hasSuffix(".msi") else {
-            errorMessage = "Unsupported file type. Open a .exe, .msi, or a folder containing one."
+        let ext = path.lowercased()
+        guard ext.hasSuffix(".exe") || ext.hasSuffix(".msi") || ext.hasSuffix(".dll") else {
+            setError(.fileUnsupportedType, details: "Expected .exe, .msi, or .dll")
             return
         }
 
@@ -625,8 +693,8 @@ class AppState: ObservableObject {
 
         let arch = PEInspector.shared.detectArch(path: path)
         if arch == .arm64 {
-            errorMessage =
-                "Windows ARM64 executables are not supported yet. Use an x86 or x64 build."
+            setError(
+                .launchUnsupportedArch, details: "Windows ARM64 not supported. Use x86 or x64.")
             return
         }
 

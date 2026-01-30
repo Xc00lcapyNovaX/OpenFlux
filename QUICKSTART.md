@@ -76,7 +76,23 @@ Then manually configure:
 3. Click **Verify Installation** to test paths
 4. System info should show detected versions
 
-### Step 4: Detect Games
+### Step 4: Run Windows Executables
+
+**Option A: Dashboard Run Button**
+1. Click **Dashboard** in the sidebar
+2. Click the **Run** button (between title and center)
+3. Select a .exe, .msi, or .dll file from Finder
+4. OpenFlux will launch it with Wine automatically
+
+**Option B: Finder "Open With"**
+1. Right-click any .exe, .msi, or .dll file in Finder
+2. Select "Open With" → "OpenFlux"
+3. The file launches automatically with Wine
+
+**Option C: Drag and Drop**
+Simply drag a Windows executable onto the OpenFlux dock icon.
+
+### Step 5: Detect Steam Games
 
 1. Click **Games** in the sidebar
 2. Click **Refresh** button to start detection
@@ -87,7 +103,7 @@ Then manually configure:
    - ⚠️ Warning = Missing dependencies
    - Steam ID and install path shown
 
-### Step 5: Launch a Game
+### Step 6: Launch a Game
 
 1. **Select** a game from the list (click it)
 2. Click the **Launch** button

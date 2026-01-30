@@ -1,7 +1,26 @@
 import SwiftUI
 
+// MARK: - App Delegate for handling Finder "Open With"
+
+#if os(macOS)
+    class AppDelegate: NSObject, NSApplicationDelegate {
+        func application(_ application: NSApplication, open urls: [URL]) {
+            // Handle files opened via Finder "Open With"
+            for url in urls {
+                if url.isFileURL {
+                    AppState.shared.handleOpenURL(url)
+                }
+            }
+        }
+    }
+#endif
+
 @main
 struct FluxApp: App {
+    #if os(macOS)
+        @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    #endif
+
     @StateObject private var appState = AppState.shared
     @StateObject private var themeManager = ThemeManager.shared
     @AppStorage("hasCompletedFirstBoot") private var hasCompletedFirstBoot = false
@@ -17,9 +36,20 @@ struct FluxApp: App {
         // Load saved theme
         ThemeManager.shared.loadTheme()
 
-        // Enter fullscreen on launch
+        // Set window to 80% of screen size on launch
         #if os(macOS)
-            NSApplication.shared.enterFullScreenOnLaunch()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                if let window = NSApplication.shared.windows.first,
+                    let screen = NSScreen.main
+                {
+                    let screenFrame = screen.visibleFrame
+                    let width = screenFrame.width * 0.8
+                    let height = screenFrame.height * 0.8
+                    let x = screenFrame.origin.x + (screenFrame.width - width) / 2
+                    let y = screenFrame.origin.y + (screenFrame.height - height) / 2
+                    window.setFrame(NSRect(x: x, y: y, width: width, height: height), display: true)
+                }
+            }
         #endif
     }
 

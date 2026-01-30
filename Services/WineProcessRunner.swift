@@ -1,5 +1,5 @@
-import Foundation
 import Darwin
+import Foundation
 
 final class WineProcessRunner {
     private let appState: AppState
@@ -83,7 +83,8 @@ final class WineProcessRunner {
         do {
             try process.run()
         } catch {
-            return RunResult(exitCode: -1, stdout: "", stderr: error.localizedDescription, timedOut: false)
+            return RunResult(
+                exitCode: -1, stdout: "", stderr: error.localizedDescription, timedOut: false)
         }
 
         let waitResult = sema.wait(timeout: .now() + timeoutSeconds)
@@ -106,7 +107,8 @@ final class WineProcessRunner {
         let err = String(data: stderrData, encoding: .utf8) ?? ""
         lock.unlock()
 
-        return RunResult(exitCode: process.terminationStatus, stdout: out, stderr: err, timedOut: timedOut)
+        return RunResult(
+            exitCode: process.terminationStatus, stdout: out, stderr: err, timedOut: timedOut)
     }
 
     private func executeProcess(
@@ -146,21 +148,21 @@ final class WineProcessRunner {
         do {
             try process.run()
             appState.log(
-                "Game process started with PID: \(process.processIdentifier)", category: .games)
+                "App process started with PID: \(process.processIdentifier)", category: .games)
             process.waitUntilExit()
-            appState.log("Game exited with status: \(process.terminationStatus)", category: .games)
+            appState.log("App exited with status: \(process.terminationStatus)", category: .games)
             if process.terminationStatus != 0, let game {
                 appState.markLaunchFailed(
                     game,
-                    message: "Game exited with status: \(process.terminationStatus)"
+                    message: "App exited with status: \(process.terminationStatus)"
                 )
             }
         } catch {
-            appState.error("Failed to launch game: \(error.localizedDescription)", category: .games)
+            appState.error("Failed to launch app: \(error.localizedDescription)", category: .games)
             if let game {
                 appState.markLaunchFailed(
                     game,
-                    message: "Failed to launch game: \(error.localizedDescription)"
+                    message: "Failed to launch app: \(error.localizedDescription)"
                 )
             }
         }

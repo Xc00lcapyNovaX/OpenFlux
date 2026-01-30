@@ -1,9 +1,30 @@
+@_exported import Foundation
 import SwiftUI
+import UniformTypeIdentifiers
+
+// MARK: - UTType Extensions for Windows Executables
+
+extension UTType {
+    static var exe: UTType {
+        UTType(filenameExtension: "exe") ?? .data
+    }
+    static var msi: UTType {
+        UTType(filenameExtension: "msi") ?? .data
+    }
+    static var dll: UTType {
+        UTType(filenameExtension: "dll") ?? .data
+    }
+}
+
+// Ensure AppState is imported - check your project structure
+// Common locations: Models/AppState.swift or Core/AppState.swift
+// If AppState is in a separate module/framework: import ModuleName
 
 struct ContentView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var themeManager: ThemeManager
     @State private var selection: SidebarSelection = .games
+    @State private var showFeedback = false
 
     enum SidebarSelection {
         case dashboard
@@ -83,6 +104,26 @@ struct ContentView: View {
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
+                .scaleEffect(appState.settingsManager.uiScale)
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: .infinity
+                )
+
+                // Feedback Button Overlay
+                VStack {
+                    Spacer()
+                    HStack {
+                        if appState.settingsManager.feedbackButtonPosition == "bottomRight" {
+                            Spacer()
+                            feedbackButton
+                        } else {
+                            feedbackButton
+                            Spacer()
+                        }
+                    }
+                }
+                .padding(16)
             }
             .sheet(
                 isPresented: Binding(
@@ -101,7 +142,30 @@ struct ContentView: View {
                     EmptyView()
                 }
             }
+            .sheet(isPresented: $showFeedback) {
+                DeveloperFeedbackView()
+                    .environmentObject(themeManager)
+                    .environmentObject(appState)
+            }
         }
+    }
+
+    private var feedbackButton: some View {
+        Button(action: { showFeedback = true }) {
+            Label("Feedback", systemImage: "bubbles.and.sparkles")
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(themeColors.primary.opacity(0.9))
+                )
+                .foregroundStyle(.white)
+        }
+        .buttonStyle(.plain)
+        .shadow(color: Color.black.opacity(0.2), radius: 4, x: 0, y: 2)
+        .help("Send feedback to the developers")
     }
 }
 
@@ -180,6 +244,7 @@ struct PatchNotesSheet: View {
 struct DashboardView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var themeManager: ThemeManager
+    @State private var showFilePicker = false
 
     var themeColors: ThemeManager.Colors {
         themeManager.colors(for: themeManager.currentTheme)
@@ -188,10 +253,38 @@ struct DashboardView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                Text("Dashboard")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundStyle(themeColors.text)
+                // Header row with Dashboard title and Run button
+                HStack(alignment: .center) {
+                    Text("Dashboard")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundStyle(themeColors.text)
+
+                    Spacer()
+                        .frame(maxWidth: 60)
+
+                    // Run button - positioned between left and middle
+                    Button(action: { showFilePicker = true }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "play.fill")
+                                .font(.system(size: 12, weight: .semibold))
+                            Text("Run")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                        }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(themeColors.accent)
+                        )
+                        .foregroundStyle(.white)
+                    }
+                    .buttonStyle(.plain)
+                    .help("Run a Windows executable (.exe, .msi)")
+
+                    Spacer()
+                }
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Recents")
@@ -230,8 +323,29 @@ struct DashboardView: View {
             .padding(16)
         }
         .background(themeColors.background.ignoresSafeArea())
+        .fileImporter(
+            isPresented: $showFilePicker,
+            allowedContentTypes: [.exe, .msi, .dll],
+            allowsMultipleSelection: false
+        ) { result in
+            switch result {
+            case .success(let urls):
+                if let url = urls.first {
+                    // Start accessing the security-scoped resource
+                    guard url.startAccessingSecurityScopedResource() else {
+                        appState.setError(.fileAccessDenied, details: url.lastPathComponent)
+                        return
+                    }
+                    defer { url.stopAccessingSecurityScopedResource() }
+                    appState.handleOpenURL(url)
+                }
+            case .failure(let error):
+                appState.setError(.fileAccessDenied, details: error.localizedDescription)
+            }
+        }
     }
 }
+
 #if canImport(PreviewsMacros)
     #Preview {
         ContentView()
