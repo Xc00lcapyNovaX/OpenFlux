@@ -108,7 +108,18 @@ class DLLDependencyResolver {
             return
         }
 
+        // Skip Steam DLLs - they require special handling (SteamAPIEmulator)
+        let steamDLLs = [
+            "steam_api64.dll", "steam_api.dll", "steamclient64.dll", "steamclient.dll",
+        ]
+
         for dllName in missingDLLs {
+            // Skip Steam DLLs - they need real implementations or emulation
+            if steamDLLs.contains(dllName.lowercased()) {
+                logger.debug("Skipping Steam DLL (requires emulation): \(dllName)")
+                continue
+            }
+
             let dllPath = stubDir + "/\(dllName)"
 
             // Don't overwrite existing DLLs

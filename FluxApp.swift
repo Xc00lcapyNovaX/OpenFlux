@@ -32,6 +32,9 @@ struct FluxApp: App {
 
         // Initialize logging system (through AppState spine)
         AppState.shared.log("App launched", category: .engine)
+        
+        // Health monitoring is auto-started by AppState
+        AppState.shared.log("System health monitoring enabled", category: .engine)
 
         // Load saved theme
         ThemeManager.shared.loadTheme()

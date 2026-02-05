@@ -18,6 +18,8 @@ A clean, minimal macOS launcher for running Windows games via Wine, with optiona
 - **Wine Smoke Test** - Validate that Wine can run basic commands from inside OpenFlux
 - **Developer Feedback** - Built-in feedback button to send reports to developers
 - **Dashboard with Recents** - View recently launched games and quick actions
+- **User Authentication** - Sign in with Apple, Google, Microsoft, or Email/Password
+- **iCloud Sync** - Sync preferences and settings across multiple Macs via CloudKit
 
 ## System Requirements
 
@@ -61,15 +63,27 @@ All core services use the singleton pattern to ensure a single source of truth:
 - **SettingsView** - Configure GPTK/Wine paths, verify installation, access utilities
 - **DependenciesView** - Manage missing DLLs and create stubs (planned)
 
-## Installation
+## Build & Run
 
+### Requirements
+- **macOS:** 13.0 or later
+- **Xcode:** 14.0+ (or Command Line Tools via `xcode-select --install`)
+- **Wine:** Homebrew `brew install --cask wine-stable`
+- **GPTK (optional):** Download from https://developer.apple.com/download/all/
+
+### Build
 ```bash
 # Clone repository
 git clone https://github.com/yourusername/openflux.git
 cd OpenFlux
 
-# Build the app
+# Using Xcode
+open Flux.xcodeproj
+# Press Cmd+R to build & run
+
+# Or via command line
 xcodebuild -scheme Flux -configuration Release
+open build/Release/Flux.app
 ```
 
 ## How It Works

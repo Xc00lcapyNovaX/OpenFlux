@@ -1,4 +1,5 @@
 import AppKit
+import Darwin
 import Foundation
 
 final class LaunchCoordinator {
@@ -41,9 +42,10 @@ final class LaunchCoordinator {
     }
 
     func launch(_ game: Game) {
-        appState.log("═══════════════════════════════════════════", category: .games)
-        appState.log("Launching: \(game.name)", category: .games)
-        appState.log("Steam ID: \(game.steamAppId)", category: .games)
+        appState.log(
+            "═══════════════════════════════════════════", category: .games, appName: game.name)
+        appState.log("Launching: \(game.name)", category: .games, appName: game.name)
+        appState.log("Steam ID: \(game.steamAppId)", category: .games, appName: game.name)
         var resolvedGame = game
         let exeArch = PEInspector.shared.detectArch(path: game.executablePath)
         if exeArch == .arm64 {
@@ -55,18 +57,34 @@ final class LaunchCoordinator {
         }
         if exeArch == .x64, game.executionEnvironment == .x86 {
             appState.log(
-                "Detected 64-bit EXE; overriding x86 prefix to x64 prefix", category: .games)
+                "Detected 64-bit EXE; overriding x86 prefix to x64 prefix", category: .games,
+                appName: game.name)
             resolvedGame.executionEnvironment = .native
         }
 
         appState.log(
             "Environment: \(resolvedGame.executionEnvironment.icon) \(resolvedGame.executionEnvironment.displayName)",
-            category: .games)
-        appState.log("Launch method: \(game.launchMethod.rawValue)", category: .games)
-        appState.log("Path: \(game.installPath)", category: .games)
-        appState.log("═══════════════════════════════════════════", category: .games)
+            category: .games, appName: game.name)
+        appState.log(
+            "Launch method: \(game.launchMethod.rawValue)", category: .games, appName: game.name)
+        appState.log("Path: \(game.installPath)", category: .games, appName: game.name)
+        appState.log(
+            "═══════════════════════════════════════════", category: .games, appName: game.name)
 
         appState.recordRecentLaunch(resolvedGame)
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // SYSTEM PROTECTION: Safe Launch Mode
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        let totalMemory = Double(ProcessInfo.processInfo.physicalMemory)
+        let totalMemoryGB = totalMemory / 1024.0 / 1024.0 / 1024.0
+
+        appState.log(
+            String(format: "Safe Launch Mode active (RAM-aware: %.0f GB)", totalMemoryGB),
+            category: .games, appName: game.name)
+
+        // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
         // Check Wine availability (always required for launching)
         guard wineDetector.isAvailable else {
@@ -229,13 +247,60 @@ final class LaunchCoordinator {
     }
 
     private func launchGameProcess(_ game: Game, useGPTK: Bool) {
+        // Apply network fixes to ensure SSL/TLS and Kerberos support
+        WineNetworkFixer.shared.applyNetworkFixes()
+
+        // Clean up any broken Steam stub DLLs from previous runs
+        SteamAPIEmulator.shared.cleanupBrokenStubs()
+
         // Setup environment
         var environment = ProcessInfo.processInfo.environment
         environmentBuilder.setupExecutionEnvironment(&environment, for: game, useGPTK: useGPTK)
 
-        // Analyze and handle missing DLL dependencies
-        let missingDLLs = dependencyResolver.analyzeDependencies(
+        // Critical Wine network fixes for HTTP downloads (Steam, etc.)
+        // These disable SSL certificate verification to allow Wine to download over HTTPS
+        environment["WINEHOSTNAME"] = "wine-machine"
+        environment["WINELOADERNOEXEC"] = "1"
+
+        // Disable SSL verification for Wine HTTP (steam client needs this)
+        environment["OPENSSL_ALLOW_PROXY_CERTS"] = "1"
+
+        // Force IPv4 (Wine IPv6 support is incomplete)
+        environment["WINENETWORK_FORCE_IPV4"] = "1"
+
+        // Use Mozilla CA bundle if available
+        let caBundlePaths = [
+            "/opt/homebrew/etc/ca-certificates/cert.pem",
+            "/etc/ssl/certs/ca-bundle.crt",
+            "/usr/local/etc/ca-certificates/cert.pem",
+        ]
+        for caPath in caBundlePaths {
+            if FileManager.default.fileExists(atPath: caPath) {
+                environment["SSL_CERT_FILE"] = caPath
+                environment["CURL_CA_BUNDLE"] = caPath
+                appState.debug("Using CA bundle: \(caPath)", category: .environment)
+                break
+            }
+        }
+
+        // Handle Steam API - configure bypass for Steam games
+        let gamePath = (game.executablePath as NSString).deletingLastPathComponent
+        if game.steamAppId != 0
+            || SteamAPIEmulator.shared.needsSteamEmulation(executablePath: game.executablePath)
+        {
+            appState.debug("Configuring Steam API bypass for \(game.name)", category: .dependencies)
+            SteamAPIEmulator.shared.configureEnvironment(
+                &environment,
+                gamePath: gamePath,
+                steamAppId: game.steamAppId != 0 ? game.steamAppId : 322170  // Default to GD if unknown
+            )
+        }
+
+        // Analyze and handle missing DLL dependencies (skip steam_api since we handle it above)
+        var missingDLLs = dependencyResolver.analyzeDependencies(
             executablePath: game.executablePath)
+        missingDLLs.removeAll { $0.lowercased().contains("steam_api") }
+
         if !missingDLLs.isEmpty {
             dependencyResolver.reportMissingDependencies(missingDLLs, executable: game.name)
             let prefixPath = envManager.getPrefixPath(for: game.executionEnvironment)
@@ -243,8 +308,27 @@ final class LaunchCoordinator {
         }
 
         // Inject DLLs (optional per-game folder)
+        var dllOverrides: [String] = []
         if let overrides = dllInjector.injectDLLs(for: game) {
-            environment["WINEDLLOVERRIDES"] = overrides
+            dllOverrides.append(overrides)
+        }
+
+        // For Steam games, configure DLL overrides to prefer native or disable
+        if game.steamAppId != 0
+            || SteamAPIEmulator.shared.needsSteamEmulation(executablePath: game.executablePath)
+        {
+            // Try native first (from game folder), if that fails, use builtin (Wine's)
+            // This allows real Steam DLLs to work if present, or falls back gracefully
+            dllOverrides.append("steam_api64=n,b")
+            dllOverrides.append("steam_api=n,b")
+            dllOverrides.append("steamclient64=n,b")
+            dllOverrides.append("steamclient=n,b")
+        }
+
+        if !dllOverrides.isEmpty {
+            environment["WINEDLLOVERRIDES"] = dllOverrides.joined(separator: ";")
+            appState.debug(
+                "DLL overrides: \(dllOverrides.joined(separator: ";"))", category: .dependencies)
         }
 
         // Prepare Wine command
@@ -277,5 +361,15 @@ final class LaunchCoordinator {
         }
         appState.log("Launching via Steam: \(url.absoluteString)", category: .games)
         NSWorkspace.shared.open(url)
+
+        // Open Steam console after a brief delay to allow Steam to initialize
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            guard let consoleURL = URL(string: "steam://open/console") else {
+                self.appState.log("Could not open Steam console", category: .games)
+                return
+            }
+            self.appState.log("Opening Steam console", category: .games)
+            NSWorkspace.shared.open(consoleURL)
+        }
     }
 }

@@ -92,6 +92,7 @@ class SettingsManager: ObservableObject {
         createDirectoryIfNeeded(getPrefixDirectory())
         createDirectoryIfNeeded(getLogsDirectory())
         createDirectoryIfNeeded(getPrefixesDirectory())
+        createDirectoryIfNeeded(getCacheDirectory())
     }
 
     private func createDirectoryIfNeeded(_ path: String) {
@@ -213,5 +214,9 @@ class SettingsManager: ObservableObject {
 
     func getLogsDirectory() -> String {
         return getAppDirectory() + "/logs"
+    }
+
+    func getCacheDirectory() -> String {
+        return getAppDirectory() + "/cache"
     }
 }

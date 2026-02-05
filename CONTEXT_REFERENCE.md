@@ -574,10 +574,231 @@ open build/Build/Products/Debug/Flux.app
 
 ---
 
-## 15. Contact/Reference
+## 15. CloudKit Sync (NEW - February 2026)
+
+### Overview
+iCloud sync for preferences and settings across multiple Macs.
+
+**What Syncs:**
+- ✅ Theme, UI scale, feedback position
+- ✅ Launch environment, selected launcher
+- ✅ Per-game overrides (GPTK mode, graphics API, launch method)
+- ✅ Recent launches (max 50, with device attribution)
+
+**What Does NOT Sync:**
+- ❌ Wine prefixes (too large)
+- ❌ Game files, logs, credentials
+
+### Files
+```
+Services/CloudKit/
+├── SyncModels.swift       # Data models (SyncablePreferences, etc.)
+├── CloudKitManager.swift  # CloudKit operations singleton
+└── SyncCoordinator.swift  # Bridges services with CloudKit
+
+Views/SyncSettingsView.swift  # Sync toggle UI
+OpenFlux.entitlements         # iCloud entitlements
+```
+
+### CloudKit Schema (Private Database)
+| Record Type | Description |
+|-------------|-------------|
+| `UserPreferences` | Theme, UI settings (1 per user) |
+| `GameOverride` | Per-game settings |
+| `RecentLaunch` | Launch history (max 50) |
+| `SyncMetadata` | Sync state tracking |
+
+### Implementation Status
+**Completed:**
+- ✅ CloudKitManager singleton with all operations
+- ✅ SyncModels (SyncablePreferences, GameOverride, RecentLaunch)
+- ✅ AppState integration with automatic sync triggers
+- ✅ Rate limiting (30s minimum between syncs)
+- ✅ Offline queue for pending changes
+- ✅ Conflict resolution (last-writer-wins)
+
+**TODO (Xcode Setup):**
+1. [ ] Enable iCloud capability in Xcode target settings
+2. [ ] Add CloudKit container: `iCloud.com.efealibel.OpenFlux`
+3. [ ] Add `SyncSettingsView` to SettingsView UI
+4. [ ] Test offline → online sync
+
+### Sync Triggers (Automatic)
+| Event | What Syncs | Method |
+|-------|------------|--------|
+| App launch | Fetch all | `initializeCloudKitIfNeeded()` |
+| Onboarding complete | Preferences | `syncPreferencesToCloud()` |
+| Game override change | GameOverride | `syncGameOverrideToCloud()` |
+| Game launch | RecentLaunch | `syncRecentLaunchToCloud()` |
+| Settings change | Preferences | `requestSync()` |
+
+### Key APIs
+```swift
+// Toggle sync on/off
+appState.setSyncEnabled(true)
+
+// Force full sync (user-initiated)
+appState.forceFullSync()
+
+// Record game launch (auto-syncs)
+appState.recordRecentLaunch(game, success: true)
+
+// Update game override (auto-syncs)
+appState.updateLaunchMethod(for: gameId, method: .direct)
+appState.updateGPTKMode(for: gameId, mode: .enabled)
+```
+
+### Error Handling
+- Sync errors logged to `.services` category
+- `syncError` property on AppState shows current error (or nil)
+- `syncState` property shows: `.idle`, `.syncing`, `.error(msg)`, `.disabled`, `.noAccount`
+- Network failures queue changes for later (offline queue)
+
+---
+
+## 16. Authentication System
+
+### AuthenticationManager - User Authentication Service
+**File:** `Services/AuthenticationManager.swift`
+
+Centralized authentication service supporting multiple providers:
+- Sign in with Apple (ASAuthorizationController)
+- Google OAuth (requires Google Sign-In SDK)
+- Microsoft OAuth (requires MSAL)
+- Email/Password authentication (requires backend API)
+
+**Singleton Pattern:**
+```swift
+let authManager = AuthenticationManager.shared
+```
+
+**Authentication State:**
+```swift
+@Published var currentUser: AuthUser?
+@Published var isAuthenticated: Bool
+@Published var isLoading: Bool
+@Published var authError: String?
+```
+
+**User Model (AuthUser):**
+- `id: String` - unique user identifier
+- `email: String` - user email address
+- `displayName: String?` - optional display name
+- `provider: AuthProvider` - which provider was used (.apple, .google, .microsoft, .email)
+- `createdAt: Date` - account creation timestamp
+- `lastLoginAt: Date` - last successful login
+- `initials: String` - computed property for avatar display
+
+**Security:**
+- Credentials stored in Keychain (not UserDefaults)
+- OAuth tokens refreshable via `refreshToken()`
+- Session persists across app launches via `loadStoredUser()`
+
+### Sign In Methods
+```swift
+// Sign in with Apple (native macOS)
+try await authManager.signInWithApple()
+
+// Google Sign-In (requires SDK integration)
+try await authManager.signInWithGoogle()
+
+// Microsoft Sign-In (requires MSAL integration)
+try await authManager.signInWithMicrosoft()
+
+// Email/Password sign in (requires backend)
+try await authManager.signInWithEmail(email: "user@example.com", password: "password")
+
+// Email/Password sign up (requires backend)
+try await authManager.signUpWithEmail(
+    email: "user@example.com",
+    password: "password",
+    displayName: "John Doe"
+)
+
+// Sign out (clears keychain and state)
+authManager.signOut()
+```
+
+### AccountView - Authentication UI
+**File:** `Views/AccountView.swift`
+
+Navigation item added to sidebar (below Settings) showing:
+- **Unauthenticated state:**
+  - Welcome message
+  - Social login buttons (Apple, Google, Microsoft)
+  - Email login form (toggle between sign in/sign up)
+  - Loading indicators
+  - Error messages
+
+- **Authenticated state:**
+  - User avatar with initials
+  - Display name and email
+  - Provider badge (which service was used)
+  - iCloud connection status
+  - CloudKit sync controls (toggle, last sync, sync now button)
+  - Account information (created date, last login, user ID)
+  - Sign out button
+
+### Authentication Flow
+1. User opens AccountView from sidebar
+2. Taps social login button OR enters email/password
+3. AuthenticationManager handles provider-specific auth
+4. On success:
+   - User stored in Keychain
+   - `currentUser` and `isAuthenticated` updated
+   - UI automatically switches to authenticated state
+5. On error:
+   - `authError` property set with message
+   - Error displayed in UI
+
+### Production Setup Required
+
+**Google OAuth (GoogleSignIn SDK):**
+1. Create project in Google Cloud Console
+2. Configure OAuth consent screen
+3. Get OAuth client ID for macOS
+4. Add GoogleSignIn Swift package
+5. Update `googleClientId` in AuthenticationManager
+6. Implement proper OAuth callback handling
+
+**Microsoft OAuth (MSAL):**
+1. Register app in Azure AD
+2. Get client ID and tenant ID
+3. Add MSAL Swift package
+4. Update `microsoftClientId` in AuthenticationManager
+5. Implement proper OAuth callback handling
+
+**Email/Password Backend:**
+1. Create backend API endpoints:
+   - POST `/auth/signup` - create account
+   - POST `/auth/signin` - authenticate user
+   - POST `/auth/refresh` - refresh token
+   - POST `/auth/signout` - invalidate token
+2. Implement proper password hashing (bcrypt/Argon2)
+3. Add email verification flow
+4. Update API URLs in AuthenticationManager
+5. Replace placeholder implementations
+
+**Sign in with Apple:**
+- Already fully implemented (native macOS)
+- Uses ASAuthorizationController
+- Requires app to be signed with proper entitlements in production
+
+### Security Best Practices
+- ✅ Credentials stored in Keychain (encrypted)
+- ✅ Email validation before API calls
+- ⚠️ Password hashing is placeholder (needs real implementation)
+- ⚠️ OAuth tokens need proper refresh logic
+- ⚠️ Backend API needs HTTPS + rate limiting
+- ⚠️ Add token expiration checks
+- ⚠️ Implement session timeout
+
+---
+
+## 17. Contact/Reference
 
 **Project Started:** January 27, 2026  
-**Last Major Update:** January 27, 2026 (Onboarding + UI + Architecture fixes)  
+**Last Major Update:** February 2, 2026 (Authentication system + CloudKit sync)  
 **Current Build:** Debug configuration, arm64 native macOS
 
 **Known Working:**
@@ -586,19 +807,22 @@ open build/Build/Products/Debug/Flux.app
 - ✅ Main UI displays after onboarding
 - ✅ Theme management works
 - ✅ Settings persist
+- ✅ System health monitoring (RAM/CPU/Disk)
+- ✅ CloudKit models and services (pending Xcode capability)
+- ✅ Authentication system (Sign in with Apple ready, others need production setup)
+- ✅ AccountView with login UI
 
 **Ready for Implementation:**
 - Game scanning from selected launcher
 - Game launching via GPTK
 - Prefix management UI
 - Dependency checking
+- CloudKit sync activation
+- OAuth provider integration (Google, Microsoft)
+- Email/password backend API
 
 ---
 
 **END OF CONTEXT REFERENCE**
 
 *Use this file to quickly get up to speed on the OpenFlux project architecture, decisions, and current state.*
-### Per-Game Launch Metadata (New)
-**File:** `Views/GamesView.swift`
-- GPTK mode: inherit / enabled / disabled
-- Graphics API: unknown / directx / opengl / vulkan

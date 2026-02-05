@@ -124,38 +124,52 @@ final class WineProcessRunner {
         process.environment = environment
         process.currentDirectoryPath = workingDirectory
 
-        // Setup output capture
+        // Disable output streaming to reduce disk I/O - just discard output
         let outputPipe = Pipe()
         let errorPipe = Pipe()
         process.standardOutput = outputPipe
         process.standardError = errorPipe
 
-        // Read output streams
-        DispatchQueue.global(qos: .background).async { [weak self] in
-            let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
-            if let output = String(data: outputData, encoding: .utf8), !output.isEmpty {
-                self?.appState.log(output, category: .gameOutput)
-            }
-        }
-
-        DispatchQueue.global(qos: .background).async { [weak self] in
-            let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
-            if let error = String(data: errorData, encoding: .utf8), !error.isEmpty {
-                self?.appState.warning(error, category: .gameError)
-            }
-        }
-
         do {
             try process.run()
-            appState.log(
-                "App process started with PID: \(process.processIdentifier)", category: .games)
-            process.waitUntilExit()
-            appState.log("App exited with status: \(process.terminationStatus)", category: .games)
-            if process.terminationStatus != 0, let game {
-                appState.markLaunchFailed(
-                    game,
-                    message: "App exited with status: \(process.terminationStatus)"
-                )
+            let pid = process.processIdentifier
+            appState.log("App process started with PID: \(pid)", category: .games)
+
+            // Register with process monitor if we have a game
+            if let game = game {
+                DispatchQueue.main.async { [weak self] in
+                    self?.appState.runningGames[game.id] = ProcessMonitor.ProcessInfo(
+                        pid: pid,
+                        name: game.name,
+                        startTime: Date()
+                    )
+                }
+            }
+
+            // Wait for process in background to not block
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                process.waitUntilExit()
+
+                // Close pipes
+                outputPipe.fileHandleForReading.closeFile()
+                errorPipe.fileHandleForReading.closeFile()
+
+                let exitStatus = process.terminationStatus
+
+                DispatchQueue.main.async {
+                    self?.appState.log("App exited with status: \(exitStatus)", category: .games)
+
+                    if let game = game {
+                        self?.appState.runningGames.removeValue(forKey: game.id)
+
+                        if exitStatus != 0 {
+                            self?.appState.markLaunchFailed(
+                                game,
+                                message: "App exited with status: \(exitStatus)"
+                            )
+                        }
+                    }
+                }
             }
         } catch {
             appState.error("Failed to launch app: \(error.localizedDescription)", category: .games)

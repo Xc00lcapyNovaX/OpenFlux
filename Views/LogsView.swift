@@ -5,16 +5,66 @@ struct LogsView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @State private var autoScroll = true
     @State private var filterLevel: AppState.LogLevel?
-    
+    @State private var expandedApps: Set<String> = []  // Track which apps are expanded
+    @State private var expandedSessions: Set<String> = []  // Track which sessions are expanded
+    @State private var highlightedLogId: UUID? = nil  // Track highlighted log
+
     var themeColors: ThemeManager.Colors {
         themeManager.colors(for: themeManager.currentTheme)
     }
-    
+
     var filteredLogs: [AppState.LogEntry] {
         if let level = filterLevel {
             return appState.logs.filter { $0.level == level }
         }
         return appState.logs
+    }
+
+    // Group logs by app name, then by session ID
+    var logsByAppAndSession:
+        [(
+            appName: String,
+            sessions: [(
+                sessionId: String, startTime: Date, logCount: Int, logs: [AppState.LogEntry]
+            )]
+        )]
+    {
+        guard !filteredLogs.isEmpty else { return [] }
+
+        // Group by app name first
+        var appMap: [String: [AppState.LogEntry]] = [:]
+        for log in filteredLogs {
+            let appName = log.appName ?? "System"
+            if appMap[appName] == nil {
+                appMap[appName] = []
+            }
+            appMap[appName]?.append(log)
+        }
+
+        // For each app, group by session
+        return appMap.sorted { $0.key < $1.key }.map { appName, logs in
+            var sessionMap: [String: (startTime: Date, logs: [AppState.LogEntry])] = [:]
+
+            for log in logs {
+                if sessionMap[log.sessionId] == nil {
+                    sessionMap[log.sessionId] = (startTime: log.timestamp, logs: [])
+                }
+                sessionMap[log.sessionId]?.logs.append(log)
+            }
+
+            let sessions = sessionMap.sorted { a, b in
+                a.value.startTime.compare(b.value.startTime) == .orderedDescending
+            }.map { sessionId, data in
+                (
+                    sessionId: sessionId,
+                    startTime: data.startTime,
+                    logCount: data.logs.count,
+                    logs: data.logs
+                )
+            }
+
+            return (appName: appName, sessions: sessions)
+        }
     }
 
     // Status helpers
@@ -32,7 +82,7 @@ struct LogsView: View {
         let expected = SettingsManager.shared.gptkPath + "/lib"
         return "GPTK: not installed (expected at \(expected))"
     }
-    
+
     var body: some View {
         VStack(spacing: 0) {
             // Runtime status bar
@@ -64,10 +114,112 @@ struct LogsView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 ScrollViewReader { proxy in
-                    List(filteredLogs) { entry in
-                        LogEntryRow(entry: entry)
-                            .environmentObject(themeManager)
-                            .id(entry.id)
+                    List {
+                        // Apps level
+                        ForEach(logsByAppAndSession, id: \.appName) { appGroup in
+                            DisclosureGroup(
+                                isExpanded: Binding(
+                                    get: { expandedApps.contains(appGroup.appName) },
+                                    set: { isExpanded in
+                                        if isExpanded {
+                                            expandedApps.insert(appGroup.appName)
+                                        } else {
+                                            expandedApps.remove(appGroup.appName)
+                                        }
+                                    }
+                                )
+                            ) {
+                                // Sessions level
+                                ForEach(appGroup.sessions, id: \.sessionId) { session in
+                                    DisclosureGroup(
+                                        isExpanded: Binding(
+                                            get: { expandedSessions.contains(session.sessionId) },
+                                            set: { isExpanded in
+                                                if isExpanded {
+                                                    expandedSessions.insert(session.sessionId)
+                                                } else {
+                                                    expandedSessions.remove(session.sessionId)
+                                                }
+                                            }
+                                        )
+                                    ) {
+                                        // Logs
+                                        ForEach(session.logs) { entry in
+                                            LogEntryRow(
+                                                entry: entry,
+                                                isHighlighted: highlightedLogId == entry.id
+                                            )
+                                            .environmentObject(themeManager)
+                                            .id(entry.id)
+                                            .onTapGesture {
+                                                highlightedLogId =
+                                                    (highlightedLogId == entry.id) ? nil : entry.id
+                                            }
+                                        }
+                                    } label: {
+                                        HStack(spacing: 8) {
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text("Launched")
+                                                    .font(.caption)
+                                                    .fontWeight(.semibold)
+                                                    .foregroundStyle(themeColors.text)
+
+                                                Text(
+                                                    session.startTime.formatted(
+                                                        date: .omitted, time: .standard)
+                                                )
+                                                .font(.caption2)
+                                                .foregroundStyle(themeColors.secondaryText)
+                                            }
+
+                                            Spacer()
+
+                                            HStack(spacing: 6) {
+                                                Text("\(session.logCount)")
+                                                    .font(.caption2)
+                                                    .foregroundStyle(themeColors.accent)
+
+                                                Button(action: {
+                                                    let sessionLogs = session.logs
+                                                        .map {
+                                                            "[\($0.timestamp.formatted(date: .omitted, time: .standard))] [\($0.level.rawValue)] [\($0.category.rawValue)] \($0.message)"
+                                                        }
+                                                        .joined(separator: "\n")
+                                                    NSPasteboard.general.clearContents()
+                                                    NSPasteboard.general.setString(
+                                                        sessionLogs, forType: .string)
+                                                }) {
+                                                    Image(systemName: "doc.on.doc")
+                                                        .font(.caption2)
+                                                        .foregroundStyle(themeColors.primary)
+                                                }
+                                                .buttonStyle(.plain)
+                                                .help("Copy session logs")
+                                            }
+                                        }
+                                    }
+                                }
+                            } label: {
+                                HStack(spacing: 12) {
+                                    Image(systemName: "app.badge")
+                                        .font(.caption)
+                                        .foregroundStyle(themeColors.primary)
+
+                                    Text(appGroup.appName)
+                                        .font(.callout)
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(themeColors.text)
+
+                                    Spacer()
+
+                                    Text(
+                                        "\(appGroup.sessions.count) session\(appGroup.sessions.count != 1 ? "s" : "")"
+                                    )
+                                    .font(.caption2)
+                                    .foregroundStyle(themeColors.accent)
+                                }
+                            }
+                        }
                     }
                     .scrollContentBackground(.hidden)
                     .listStyle(.plain)
@@ -78,19 +230,19 @@ struct LogsView: View {
                     }
                 }
             }
-            
+
             Divider()
                 .background(themeColors.secondaryText.opacity(0.1))
-            
+
             // Filter bar and controls
             HStack(spacing: 12) {
                 Menu {
                     Button("All") {
                         filterLevel = nil
                     }
-                    
+
                     Divider()
-                    
+
                     ForEach(AppState.LogLevel.allCases, id: \.self) { level in
                         Button(level.rawValue) {
                             filterLevel = level
@@ -107,9 +259,9 @@ struct LogsView: View {
                 .menuStyle(.button)
                 .buttonStyle(.bordered)
                 .foregroundStyle(themeColors.primary)
-                
+
                 Spacer()
-                
+
                 Toggle(isOn: $autoScroll) {
                     Label("Auto-scroll", systemImage: "arrow.down")
                         .font(.caption)
@@ -117,17 +269,17 @@ struct LogsView: View {
                 }
                 .controlSize(.small)
                 .tint(themeColors.primary)
-                
+
                 Button(action: {
                     NSPasteboard.general.clearContents()
                     NSPasteboard.general.setString(appState.exportLogs(), forType: .string)
                 }) {
-                    Label("Copy", systemImage: "doc.on.doc")
+                    Label("Copy All", systemImage: "doc.on.doc")
                         .font(.caption)
                 }
                 .buttonStyle(.bordered)
                 .foregroundStyle(themeColors.primary)
-                
+
                 Button(action: { appState.clearLogs() }) {
                     Label("Clear", systemImage: "trash")
                         .font(.caption)
@@ -145,12 +297,13 @@ struct LogsView: View {
 
 struct LogEntryRow: View {
     let entry: AppState.LogEntry
+    let isHighlighted: Bool
     @EnvironmentObject var themeManager: ThemeManager
-    
+
     var themeColors: ThemeManager.Colors {
         themeManager.colors(for: themeManager.currentTheme)
     }
-    
+
     var levelColor: Color {
         switch entry.level {
         case .debug:
@@ -163,7 +316,7 @@ struct LogEntryRow: View {
             return themeColors.destructive
         }
     }
-    
+
     var levelIcon: String {
         switch entry.level {
         case .debug:
@@ -176,50 +329,58 @@ struct LogEntryRow: View {
             return "x.circle"
         }
     }
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             HStack(spacing: 8) {
                 Image(systemName: levelIcon)
                     .foregroundStyle(levelColor)
                     .frame(width: 16)
-                
+
                 Text(entry.timestamp.formatted(date: .omitted, time: .standard))
                     .font(.caption2)
                     .foregroundStyle(themeColors.secondaryText)
                     .frame(width: 60, alignment: .leading)
-                
+
                 Text(entry.category.rawValue)
                     .font(.caption)
                     .foregroundStyle(themeColors.accent)
                     .frame(width: 80, alignment: .leading)
-                
+
                 Text(entry.message)
                     .font(.caption)
                     .foregroundStyle(themeColors.text)
                     .lineLimit(3)
-                
+
                 Spacer()
+
+                // Copy button
+                Button(action: {
+                    NSPasteboard.general.clearContents()
+                    NSPasteboard.general.setString(entry.message, forType: .string)
+                }) {
+                    Image(systemName: "doc.on.doc")
+                        .font(.caption2)
+                        .foregroundStyle(themeColors.primary)
+                }
+                .buttonStyle(.plain)
+                .opacity(isHighlighted ? 1 : 0.5)
+                .help("Copy log entry")
             }
         }
         .padding(.vertical, 4)
-        .contextMenu {
-            Button(action: {
-                NSPasteboard.general.clearContents()
-                NSPasteboard.general.setString(entry.message, forType: .string)
-            }) {
-                Label("Copy", systemImage: "doc.on.doc")
-            }
-        }
+        .padding(.horizontal, 8)
+        .background(isHighlighted ? themeColors.primary.opacity(0.2) : Color.clear)
+        .cornerRadius(4)
     }
 }
 
 #if canImport(PreviewsMacros)
-#if canImport(PreviewsMacros)
-#Preview {
-    LogsView()
-        .environmentObject(AppState.shared)
-        .environmentObject(ThemeManager.shared)
-}
-#endif
+    #if canImport(PreviewsMacros)
+        #Preview {
+            LogsView()
+                .environmentObject(AppState.shared)
+                .environmentObject(ThemeManager.shared)
+        }
+    #endif
 #endif

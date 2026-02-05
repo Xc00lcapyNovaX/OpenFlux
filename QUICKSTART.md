@@ -1,82 +1,41 @@
-# OpenFlux – Quick Start Guide
+# OpenFlux – Quick Start
 Project name: OpenFlux (internal targets/bundle still named "Flux").
 
 ## Prerequisites
-
-Before building OpenFlux, ensure you have:
-
 - macOS 13.0 or later
-- Xcode 14.0+ with Command Line Tools
-- Wine installed (required)
-- [Apple Game Porting Toolkit (GPTK)](https://developer.apple.com/download/all/) installed (optional)
-- Steam client installed with games in your library
+- Xcode 14.0+ or Command Line Tools (`xcode-select --install`)
+- Wine: `brew install --cask wine-stable`
+- [Apple Game Porting Toolkit (GPTK)](https://developer.apple.com/download/all/) (optional)
 
-## Installation & Setup
+## Build & Run
 
-### Step 1: Clone or Download OpenFlux
-
+### Option 1: Xcode (Recommended)
 ```bash
-cd ~/Projects
-git clone https://github.com/yourusername/flux.git
-cd flux
-```
-
-Or download the ZIP and extract to a folder.
-
-### Step 2: Build the App
-
-**Option A: Using Xcode (Recommended)**
-
-```bash
-# Open in Xcode
+cd OpenFlux
 open Flux.xcodeproj
-
 # Press Cmd+R to build and run
-# Or: Product → Run
 ```
 
-**Option B: Command Line**
-
+### Option 2: Command Line
 ```bash
-# Build script method
-chmod +x build.sh
-./build.sh
-
-# The app will be created at: build/Flux.app
-
-# Run it
-open build/Flux.app
+xcodebuild -scheme Flux -configuration Release
+open build/Release/Flux.app
 ```
 
-**Option C: SwiftC (Manual)**
+## First Launch
+1. OpenFlux creates `~/.flux/` directory and Wine prefix automatically
+2. Go to **Settings** → Verify Wine/GPTK paths
+3. Click **Verify Installation** to test
+4. Go to **Games** to scan Steam library
+5. Click a game title and hit **Launch**
 
-```bash
-swiftc -parse-as-library -emit-executable \
-    -o OpenFlux \
-    -target arm64-apple-macosx13.0 \
-    -framework AppKit -framework Foundation \
-    -framework SwiftUI -framework Combine \
-    FluxApp.swift Models/*.swift Services/*.swift Views/*.swift
-```
+## Architecture
+See [ARCHITECTURE.md](ARCHITECTURE.md) for technical details.
 
-### Step 3: Configure Wine (and GPTK if you enable it) (First Run)
-
-On first launch, OpenFlux automatically:
-1. Creates `~/.flux/` directory structure
-2. Initializes Wine prefix at `~/.flux/prefix/`
-3. Sets up default configuration
-
-Then manually configure:
-1. Click **Settings** in the sidebar
-2. Verify or set:
-   - Wine Directory: `/opt/homebrew/bin/wine` (or your installation)
-   - GPTK Path: `/opt/gptk` (optional; only needed if enabled)
-   - Toggle "Use Game Porting Toolkit" ON only if you want DirectX → Metal
-
-3. Click **Verify Installation** to test paths
-4. System info should show detected versions
-
-### Step 4: Run Windows Executables
+## What's New?
+- ✅ System health monitoring (RAM/CPU/disk)
+- ✅ CloudKit sync for preferences across Macs (auto-detects iCloud)
+- ✅ 7 themes including Midnight gaming theme
 
 **Option A: Dashboard Run Button**
 1. Click **Dashboard** in the sidebar

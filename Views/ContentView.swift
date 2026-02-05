@@ -32,6 +32,7 @@ struct ContentView: View {
         case prefixes
         case logs
         case settings
+        case account
     }
 
     var themeColors: ThemeManager.Colors {
@@ -80,6 +81,14 @@ struct ContentView: View {
                                 Label("Settings", systemImage: "gear")
                                     .foregroundStyle(themeColors.text.opacity(0.95))  // Brighter
                             }
+                            
+                            Divider()
+                                .padding(.vertical, 8)
+                            
+                            NavigationLink(value: SidebarSelection.account) {
+                                Label("Account", systemImage: "person.circle.fill")
+                                    .foregroundStyle(themeColors.text.opacity(0.95))
+                            }
                         }
                         .listStyle(.sidebar)
                         .scrollContentBackground(.hidden)
@@ -100,6 +109,8 @@ struct ContentView: View {
                             LogsView()
                         case .settings:
                             SettingsView()
+                        case .account:
+                            AccountView()
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -298,7 +309,7 @@ struct DashboardView: View {
                             .foregroundStyle(themeColors.secondaryText)
                     } else {
                         ForEach(appState.recentLaunches) { launch in
-                            HStack {
+                            HStack(spacing: 12) {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(launch.name)
                                         .font(.headline)
@@ -310,6 +321,19 @@ struct DashboardView: View {
                                     .foregroundStyle(themeColors.secondaryText)
                                 }
                                 Spacer()
+
+                                Button(action: { launchRecent(launch) }) {
+                                    Image(systemName: "play.fill")
+                                        .font(.system(size: 12))
+                                        .foregroundStyle(.white)
+                                        .padding(8)
+                                        .background(
+                                            Circle()
+                                                .fill(themeColors.primary)
+                                        )
+                                }
+                                .buttonStyle(.plain)
+                                .help("Launch \(launch.name)")
                             }
                             .padding(8)
                             .background(
@@ -342,6 +366,25 @@ struct DashboardView: View {
             case .failure(let error):
                 appState.setError(.fileAccessDenied, details: error.localizedDescription)
             }
+        }
+    }
+
+    private func launchRecent(_ launch: AppState.RecentLaunch) {
+        // Find the game with matching executable path and steam ID
+        if let game = appState.games.first(where: {
+            $0.executablePath == launch.executablePath && $0.steamAppId == launch.steamAppId
+        }) {
+            appState.launchGame(game)
+        } else {
+            // Create a temporary game object if not found in current list
+            let tempGame = Game(
+                name: launch.name,
+                executablePath: launch.executablePath,
+                installPath: (launch.executablePath as NSString).deletingLastPathComponent,
+                steamAppId: launch.steamAppId,
+                launchMethod: launch.launchMethod
+            )
+            appState.launchGame(tempGame)
         }
     }
 }

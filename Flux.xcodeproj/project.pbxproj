@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7F3EB41A2F2C0D98001FB772 /* README 2.md in Resources */ = {isa = PBXBuildFile; fileRef = 7F3EB4192F2C0D98001FB772 /* README 2.md */; };
 		AppStateBuild /* Models/AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AppStateRef /* Models/AppState.swift */; };
+		AccountViewBuild /* Views/AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AccountViewRef /* Views/AccountView.swift */; };
+		AuthenticationManagerBuild /* Services/AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AuthenticationManagerRef /* Services/AuthenticationManager.swift */; };
 		ContentViewBuild /* Views/ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ContentViewRef /* Views/ContentView.swift */; };
 		DLLDependencyResolverBuild /* Services/DLLDependencyResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DLLDependencyResolverRef /* Services/DLLDependencyResolver.swift */; };
 		DLLInjectorBuild /* Services/DLLInjector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DLLInjectorRef /* Services/DLLInjector.swift */; };
@@ -31,18 +32,25 @@
 		PEInspectorBuild /* Services/PEInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = PEInspectorRef /* Services/PEInspector.swift */; };
 		PrefixesViewBuild /* Views/PrefixesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PrefixesViewRef /* Views/PrefixesView.swift */; };
 		ProcessMonitorBuild /* Services/ProcessMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = ProcessMonitorRef /* Services/ProcessMonitor.swift */; };
+		SystemHealthMonitorBuild /* Services/SystemHealthMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = SystemHealthMonitorRef /* Services/SystemHealthMonitor.swift */; };
 		SettingsManagerBuild /* Services/SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = SettingsManagerRef /* Services/SettingsManager.swift */; };
 		SettingsViewBuild /* Views/SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SettingsViewRef /* Views/SettingsView.swift */; };
 		SplashViewBuild /* Views/SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SplashViewRef /* Views/SplashView.swift */; };
 		StartupViewBuild /* Views/StartupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = StartupViewRef /* Views/StartupView.swift */; };
+		SteamAPIEmulatorBuild /* Services/SteamAPIEmulator.swift in Sources */ = {isa = PBXBuildFile; fileRef = SteamAPIEmulatorRef /* Services/SteamAPIEmulator.swift */; };
 		SteamDetectorBuild /* Services/SteamLibraryDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = SteamDetectorRef /* Services/SteamLibraryDetector.swift */; };
 		SystemDetectorBuild /* Services/SystemDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = SystemDetectorRef /* Services/SystemDetector.swift */; };
 		ThemeExtBuild /* Services/ThemeExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = ThemeExtRef /* Services/ThemeExtension.swift */; };
 		ThemeManagerBuild /* Services/ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = ThemeManagerRef /* Services/ThemeManager.swift */; };
 		WineDetectorBuild /* Services/WineDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = WineDetectorRef /* Services/WineDetector.swift */; };
 		WineEnvironmentBuilderBuild /* Services/WineEnvironmentBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = WineEnvironmentBuilderRef /* Services/WineEnvironmentBuilder.swift */; };
+		WineNetworkFixerBuild /* Services/WineNetworkFixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = WineNetworkFixerRef /* Services/WineNetworkFixer.swift */; };
 		WineProcessRunnerBuild /* Services/WineProcessRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = WineProcessRunnerRef /* Services/WineProcessRunner.swift */; };
 		WineSmokeTestRunnerBuild /* Services/WineSmokeTestRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = WineSmokeTestRunnerRef /* Services/WineSmokeTestRunner.swift */; };
+		CloudKitManagerBuild /* Services/CloudKit/CloudKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CloudKitManagerRef /* Services/CloudKit/CloudKitManager.swift */; };
+		SyncModelsBuild /* Services/CloudKit/SyncModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = SyncModelsRef /* Services/CloudKit/SyncModels.swift */; };
+		SyncCoordinatorBuild /* Services/CloudKit/SyncCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = SyncCoordinatorRef /* Services/CloudKit/SyncCoordinator.swift */; };
+		SyncSettingsViewBuild /* Views/SyncSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = SyncSettingsViewRef /* Views/SyncSettingsView.swift */; };
 		XCTestFrameworkBuild /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = XCTestFrameworkRef /* XCTest.framework */; };
 /* End PBXBuildFile section */
 
@@ -57,8 +65,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		7F3EB4192F2C0D98001FB772 /* README 2.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "README 2.md"; sourceTree = "<group>"; };
 		AppStateRef /* Models/AppState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Models/AppState.swift; sourceTree = "<group>"; };
+		AccountViewRef /* Views/AccountView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/AccountView.swift; sourceTree = "<group>"; };
+		AuthenticationManagerRef /* Services/AuthenticationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/AuthenticationManager.swift; sourceTree = "<group>"; };
 		ContentViewRef /* Views/ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/ContentView.swift; sourceTree = "<group>"; };
 		DLLDependencyResolverRef /* Services/DLLDependencyResolver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/DLLDependencyResolver.swift; sourceTree = "<group>"; };
 		DLLInjectorRef /* Services/DLLInjector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/DLLInjector.swift; sourceTree = "<group>"; };
@@ -83,11 +92,13 @@
 		PEInspectorRef /* Services/PEInspector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/PEInspector.swift; sourceTree = "<group>"; };
 		PrefixesViewRef /* Views/PrefixesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/PrefixesView.swift; sourceTree = "<group>"; };
 		ProcessMonitorRef /* Services/ProcessMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/ProcessMonitor.swift; sourceTree = "<group>"; };
+		SystemHealthMonitorRef /* Services/SystemHealthMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/SystemHealthMonitor.swift; sourceTree = "<group>"; };
 		ProductRef /* Flux.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Flux.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		SettingsManagerRef /* Services/SettingsManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/SettingsManager.swift; sourceTree = "<group>"; };
 		SettingsViewRef /* Views/SettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/SettingsView.swift; sourceTree = "<group>"; };
 		SplashViewRef /* Views/SplashView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/SplashView.swift; sourceTree = "<group>"; };
 		StartupViewRef /* Views/StartupView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/StartupView.swift; sourceTree = "<group>"; };
+		SteamAPIEmulatorRef /* Services/SteamAPIEmulator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/SteamAPIEmulator.swift; sourceTree = "<group>"; };
 		SteamDetectorRef /* Services/SteamLibraryDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/SteamLibraryDetector.swift; sourceTree = "<group>"; };
 		SystemDetectorRef /* Services/SystemDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/SystemDetector.swift; sourceTree = "<group>"; };
 		TestsInfoPlistRef /* Tests/Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Tests/Info.plist; sourceTree = "<group>"; };
@@ -95,8 +106,14 @@
 		ThemeManagerRef /* Services/ThemeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/ThemeManager.swift; sourceTree = "<group>"; };
 		WineDetectorRef /* Services/WineDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/WineDetector.swift; sourceTree = "<group>"; };
 		WineEnvironmentBuilderRef /* Services/WineEnvironmentBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/WineEnvironmentBuilder.swift; sourceTree = "<group>"; };
+		WineNetworkFixerRef /* Services/WineNetworkFixer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/WineNetworkFixer.swift; sourceTree = "<group>"; };
 		WineProcessRunnerRef /* Services/WineProcessRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/WineProcessRunner.swift; sourceTree = "<group>"; };
 		WineSmokeTestRunnerRef /* Services/WineSmokeTestRunner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/WineSmokeTestRunner.swift; sourceTree = "<group>"; };
+		CloudKitManagerRef /* Services/CloudKit/CloudKitManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/CloudKit/CloudKitManager.swift; sourceTree = "<group>"; };
+		SyncModelsRef /* Services/CloudKit/SyncModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/CloudKit/SyncModels.swift; sourceTree = "<group>"; };
+		SyncCoordinatorRef /* Services/CloudKit/SyncCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Services/CloudKit/SyncCoordinator.swift; sourceTree = "<group>"; };
+		SyncSettingsViewRef /* Views/SyncSettingsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views/SyncSettingsView.swift; sourceTree = "<group>"; };
+		EntitlementsRef /* OpenFlux.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = OpenFlux.entitlements; sourceTree = "<group>"; };
 		XCTestFrameworkRef /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -138,7 +155,6 @@
 				TestsGroup /* Tests */,
 				ViewsGroup /* Views */,
 				FrameworksGroup /* Frameworks */,
-				7F3EB4192F2C0D98001FB772 /* README 2.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -163,6 +179,7 @@
 		ServicesGroup /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				AuthenticationManagerRef /* Services/AuthenticationManager.swift */,
 				DLLDependencyResolverRef /* Services/DLLDependencyResolver.swift */,
 				DLLInjectorRef /* Services/DLLInjector.swift */,
 				DependencyMgrRef /* Services/DependencyManager.swift */,
@@ -176,15 +193,21 @@
 				MetalDetectorRef /* Services/MetalDeviceDetector.swift */,
 				PEInspectorRef /* Services/PEInspector.swift */,
 				ProcessMonitorRef /* Services/ProcessMonitor.swift */,
+				SystemHealthMonitorRef /* Services/SystemHealthMonitor.swift */,
 				SettingsManagerRef /* Services/SettingsManager.swift */,
+				SteamAPIEmulatorRef /* Services/SteamAPIEmulator.swift */,
 				SteamDetectorRef /* Services/SteamLibraryDetector.swift */,
 				SystemDetectorRef /* Services/SystemDetector.swift */,
 				ThemeExtRef /* Services/ThemeExtension.swift */,
 				ThemeManagerRef /* Services/ThemeManager.swift */,
 				WineEnvironmentBuilderRef /* Services/WineEnvironmentBuilder.swift */,
 				WineDetectorRef /* Services/WineDetector.swift */,
+				WineNetworkFixerRef /* Services/WineNetworkFixer.swift */,
 				WineProcessRunnerRef /* Services/WineProcessRunner.swift */,
 				WineSmokeTestRunnerRef /* Services/WineSmokeTestRunner.swift */,
+				CloudKitManagerRef /* Services/CloudKit/CloudKitManager.swift */,
+				SyncModelsRef /* Services/CloudKit/SyncModels.swift */,
+				SyncCoordinatorRef /* Services/CloudKit/SyncCoordinator.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -201,6 +224,7 @@
 		ViewsGroup /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				AccountViewRef /* Views/AccountView.swift */,
 				ContentViewRef /* Views/ContentView.swift */,
 				DeveloperFeedbackViewRef /* Views/DeveloperFeedbackView.swift */,
 				GamesViewRef /* Views/GamesView.swift */,
@@ -209,6 +233,7 @@
 				SettingsViewRef /* Views/SettingsView.swift */,
 				SplashViewRef /* Views/SplashView.swift */,
 				StartupViewRef /* Views/StartupView.swift */,
+				SyncSettingsViewRef /* Views/SyncSettingsView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -285,7 +310,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7F3EB41A2F2C0D98001FB772 /* README 2.md in Resources */,
 				OpenFluxIconBuild /* OpenFlux.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -319,15 +343,23 @@
 				MetalDetectorBuild /* Services/MetalDeviceDetector.swift in Sources */,
 				PEInspectorBuild /* Services/PEInspector.swift in Sources */,
 				ProcessMonitorBuild /* Services/ProcessMonitor.swift in Sources */,
+				SystemHealthMonitorBuild /* Services/SystemHealthMonitor.swift in Sources */,
 				SettingsManagerBuild /* Services/SettingsManager.swift in Sources */,
+				SteamAPIEmulatorBuild /* Services/SteamAPIEmulator.swift in Sources */,
 				SteamDetectorBuild /* Services/SteamLibraryDetector.swift in Sources */,
 				SystemDetectorBuild /* Services/SystemDetector.swift in Sources */,
 				ThemeExtBuild /* Services/ThemeExtension.swift in Sources */,
 				ThemeManagerBuild /* Services/ThemeManager.swift in Sources */,
 				WineEnvironmentBuilderBuild /* Services/WineEnvironmentBuilder.swift in Sources */,
 				WineDetectorBuild /* Services/WineDetector.swift in Sources */,
+				WineNetworkFixerBuild /* Services/WineNetworkFixer.swift in Sources */,
 				WineProcessRunnerBuild /* Services/WineProcessRunner.swift in Sources */,
 				WineSmokeTestRunnerBuild /* Services/WineSmokeTestRunner.swift in Sources */,
+				AuthenticationManagerBuild /* Services/AuthenticationManager.swift in Sources */,
+				CloudKitManagerBuild /* Services/CloudKit/CloudKitManager.swift in Sources */,
+				SyncModelsBuild /* Services/CloudKit/SyncModels.swift in Sources */,
+				SyncCoordinatorBuild /* Services/CloudKit/SyncCoordinator.swift in Sources */,
+				AccountViewBuild /* Views/AccountView.swift in Sources */,
 				ContentViewBuild /* Views/ContentView.swift in Sources */,
 				DeveloperFeedbackViewBuild /* Views/DeveloperFeedbackView.swift in Sources */,
 				GamesViewBuild /* Views/GamesView.swift in Sources */,
@@ -336,6 +368,7 @@
 				SettingsViewBuild /* Views/SettingsView.swift in Sources */,
 				SplashViewBuild /* Views/SplashView.swift in Sources */,
 				StartupViewBuild /* Views/StartupView.swift in Sources */,
+				SyncSettingsViewBuild /* Views/SyncSettingsView.swift in Sources */,
 				FluxAppBuild /* FluxApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -409,8 +442,8 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.efealibel.Flux;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.openflux.app;
+				PRODUCT_NAME = OpenFlux;
 				SDKROOT = macosx;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -460,7 +493,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.efealibel.Flux;
+				PRODUCT_BUNDLE_IDENTIFIER = com.openflux.app;
 				PRODUCT_NAME = OpenFlux;
 				SDKROOT = macosx;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -475,7 +508,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				DEAD_CODE_STRIPPING = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.efealibel.Flux;
+				PRODUCT_BUNDLE_IDENTIFIER = com.openflux.app;
 			};
 			name = Debug;
 		};
@@ -484,7 +517,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				DEAD_CODE_STRIPPING = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.efealibel.Flux;
+				PRODUCT_BUNDLE_IDENTIFIER = com.openflux.app;
 			};
 			name = Release;
 		};
@@ -499,7 +532,7 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.efealibel.FluxTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.openflux.app.tests;
 				PRODUCT_NAME = FluxTests;
 				SWIFT_VERSION = 5.9;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Flux.app/Contents/MacOS/Flux";
@@ -517,7 +550,7 @@
 					"@loader_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.efealibel.FluxTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.openflux.app.tests;
 				PRODUCT_NAME = FluxTests;
 				SWIFT_VERSION = 5.9;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Flux.app/Contents/MacOS/Flux";

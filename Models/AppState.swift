@@ -1,10 +1,23 @@
 import Combine
 import Foundation
+import CloudKit
 
 /// SPINE: Single source of truth for entire application
 /// Owns logs, services, system info, and runtime state.
 /// Everything flows through here.
 class AppState: ObservableObject {
+    
+    // MARK: - CloudKit Sync State
+    @Published var syncState: SyncState = .disabled
+    @Published var lastSyncDate: Date?
+    @Published var syncError: String?
+    @Published var iCloudAvailable: Bool = false
+    
+    // Rate limiting for syncs (30s minimum)
+    private var lastSyncRequest: Date?
+    private let minSyncInterval: TimeInterval = 30
+    private var pendingSyncWorkItem: DispatchWorkItem?
+    private var cloudKitCancellables = Set<AnyCancellable>()
     // MARK: - Error Codes
 
     /// OpenFlux Error Codes for debugging and support
@@ -81,23 +94,68 @@ class AppState: ObservableObject {
 
     // MARK: - Logging (formerly LogManager)
     @Published var logs: [LogEntry] = []
+    private let currentSessionId = UUID().uuidString  // Unique ID for this app launch
 
-    struct LogEntry: Identifiable {
-        let id = UUID()
+    struct LogEntry: Identifiable, Codable {
+        var id = UUID()
         let timestamp: Date
         let level: LogLevel
         let message: String
         let category: Category
+        let sessionId: String  // Groups logs by app launch session
+        let appName: String?  // App being launched (e.g., "Geometry Dash", "Steam", etc.)
+
+        enum CodingKeys: String, CodingKey {
+            case id, timestamp, level, message, category, sessionId, appName
+        }
+
+        // Custom init for backwards compatibility with cached logs
+        init(
+            timestamp: Date, level: LogLevel, message: String, category: Category,
+            sessionId: String, appName: String? = nil
+        ) {
+            self.timestamp = timestamp
+            self.level = level
+            self.message = message
+            self.category = category
+            self.sessionId = sessionId
+            self.appName = appName
+        }
+
+        // Decoding with fallback sessionId and appName for old cached logs
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            self.id = (try? container.decode(UUID.self, forKey: .id)) ?? UUID()
+            self.timestamp = try container.decode(Date.self, forKey: .timestamp)
+            self.level = try container.decode(LogLevel.self, forKey: .level)
+            self.message = try container.decode(String.self, forKey: .message)
+            self.category = try container.decode(Category.self, forKey: .category)
+            // Fallback to "legacy" if sessionId not present (old cached logs)
+            self.sessionId = (try? container.decode(String.self, forKey: .sessionId)) ?? "legacy"
+            // appName is optional, may not exist in old logs
+            self.appName = try? container.decode(String.self, forKey: .appName)
+        }
+
+        func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(id, forKey: .id)
+            try container.encode(timestamp, forKey: .timestamp)
+            try container.encode(level, forKey: .level)
+            try container.encode(message, forKey: .message)
+            try container.encode(category, forKey: .category)
+            try container.encode(sessionId, forKey: .sessionId)
+            try container.encode(appName, forKey: .appName)
+        }
     }
 
-    enum LogLevel: String, CaseIterable {
+    enum LogLevel: String, CaseIterable, Codable {
         case debug = "DEBUG"
         case info = "INFO"
         case warning = "WARNING"
         case error = "ERROR"
     }
 
-    enum Category: String, CaseIterable {
+    enum Category: String, CaseIterable, Codable {
         case engine = "Engine"
         case games = "Games"
         case prefixes = "Prefixes"
@@ -115,13 +173,107 @@ class AppState: ObservableObject {
     private let maxLogEntries = 1000
     private let maxRecentLaunches = 10
 
-    struct RecentLaunch: Identifiable {
-        let id = UUID()
+    private let cacheQueue = DispatchQueue(label: "com.flux.cache", qos: .utility)
+    private var logsCacheWorkItem: DispatchWorkItem?
+
+    private enum CacheFile: String {
+        case games = "games.json"
+        case prefixes = "prefixes.json"
+        case logs = "logs.json"
+        case recents = "recents.json"
+    }
+
+    struct RecentLaunch: Identifiable, Codable {
+        var id = UUID()
         let name: String
         let executablePath: String
         let steamAppId: Int
         let launchMethod: LaunchMethod
         let launchedAt: Date
+    }
+
+    private func cacheURL(for file: CacheFile) -> URL {
+        let cacheDir = settingsManager.getCacheDirectory()
+        return URL(fileURLWithPath: (cacheDir as NSString).appendingPathComponent(file.rawValue))
+    }
+
+    private func loadCachedState() {
+        loadCachedPrefixes()
+        loadCachedGames()
+        loadCachedLogs()
+        loadCachedRecents()
+    }
+
+    private func loadCachedGames() {
+        let url = cacheURL(for: .games)
+        guard let data = try? Data(contentsOf: url) else { return }
+        if let decoded = try? JSONDecoder().decode([Game].self, from: data) {
+            games = decoded
+        }
+    }
+
+    private func loadCachedPrefixes() {
+        let url = cacheURL(for: .prefixes)
+        guard let data = try? Data(contentsOf: url) else { return }
+        if let decoded = try? JSONDecoder().decode([GamePrefix].self, from: data) {
+            prefixes = decoded
+        }
+    }
+
+    private func loadCachedLogs() {
+        let url = cacheURL(for: .logs)
+        guard let data = try? Data(contentsOf: url) else { return }
+        if let decoded = try? JSONDecoder().decode([LogEntry].self, from: data) {
+            logs = decoded
+        }
+    }
+
+    private func loadCachedRecents() {
+        let url = cacheURL(for: .recents)
+        guard let data = try? Data(contentsOf: url) else { return }
+        if let decoded = try? JSONDecoder().decode([RecentLaunch].self, from: data) {
+            recentLaunches = decoded
+        }
+    }
+
+    private func saveGamesCache() {
+        let url = cacheURL(for: .games)
+        cacheQueue.async { [games] in
+            if let data = try? JSONEncoder().encode(games) {
+                try? data.write(to: url)
+            }
+        }
+    }
+
+    private func savePrefixesCache() {
+        let url = cacheURL(for: .prefixes)
+        cacheQueue.async { [prefixes] in
+            if let data = try? JSONEncoder().encode(prefixes) {
+                try? data.write(to: url)
+            }
+        }
+    }
+
+    private func saveRecentsCache() {
+        let url = cacheURL(for: .recents)
+        cacheQueue.async { [recentLaunches] in
+            if let data = try? JSONEncoder().encode(recentLaunches) {
+                try? data.write(to: url)
+            }
+        }
+    }
+
+    private func scheduleLogsCacheSave() {
+        logsCacheWorkItem?.cancel()
+        let workItem = DispatchWorkItem { [logs] in
+            let url = self.cacheURL(for: .logs)
+            let trimmed = Array(logs.suffix(500))
+            if let data = try? JSONEncoder().encode(trimmed) {
+                try? data.write(to: url)
+            }
+        }
+        logsCacheWorkItem = workItem
+        cacheQueue.asyncAfter(deadline: .now() + 0.75, execute: workItem)
     }
 
     // MARK: - App Data
@@ -181,6 +333,8 @@ class AppState: ObservableObject {
     private lazy var developerFeedback = DeveloperFeedback.shared  // ← LAZY to prevent recursive init
     let settingsManager = SettingsManager.shared
     let processMonitor = ProcessMonitor()
+    let healthMonitor = SystemHealthMonitor.shared  // System health tracking
+    let cloudKitManager = CloudKitManager.shared    // CloudKit sync service
 
     // MARK: - Singleton for global access
     static let shared = AppState()
@@ -189,12 +343,207 @@ class AppState: ObservableObject {
         logOnce("AppState spine initialized", category: .engine)
         currentVersion = Self.lookupVersion()
         evaluatePatchNotes()
+        loadCachedState()
         loadPrefixes()
+        
+        // Set up CloudKit observers
+        setupCloudKitObservers()
 
         // Defer system and game detection to async after init complete
         DispatchQueue.main.async { [weak self] in
             self?.detectSystem()
             self?.detectGames()
+            // Start health monitoring with 5-second interval
+            self?.healthMonitor.startMonitoring(interval: 5.0)
+            // Initialize CloudKit if enabled
+            self?.initializeCloudKitIfNeeded()
+        }
+    }
+    
+    // MARK: - CloudKit Integration
+    
+    /// Set up observers for CloudKitManager state changes
+    private func setupCloudKitObservers() {
+        // Observe sync state
+        cloudKitManager.$syncState
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] state in
+                self?.syncState = state
+                if case .error(let message) = state {
+                    self?.syncError = message
+                } else {
+                    self?.syncError = nil
+                }
+            }
+            .store(in: &cloudKitCancellables)
+        
+        // Observe last sync date
+        cloudKitManager.$lastSyncDate
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$lastSyncDate)
+        
+        // Observe iCloud availability
+        cloudKitManager.$iCloudAvailable
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$iCloudAvailable)
+    }
+    
+    /// Initialize CloudKit on app launch if sync is enabled
+    private func initializeCloudKitIfNeeded() {
+        Task {
+            do {
+                try await cloudKitManager.initialize()
+                log("CloudKit initialized", category: .services)
+                
+                // Perform initial sync
+                await cloudKitManager.performSync(direction: .merge)
+            } catch {
+                if !iCloudAvailable {
+                    warning("iCloud not available - sync disabled. Sign in to iCloud to enable sync.", category: .services)
+                } else {
+                    log("CloudKit init failed: \(error.localizedDescription)", category: .services)
+                }
+            }
+        }
+    }
+    
+    /// Request a sync (rate-limited to 30s minimum)
+    /// Call this after any change that should sync to cloud
+    func requestSync() {
+        guard cloudKitManager.syncEnabled else { return }
+        
+        // Cancel any pending sync request
+        pendingSyncWorkItem?.cancel()
+        
+        // Check rate limiting
+        if let lastRequest = lastSyncRequest,
+           Date().timeIntervalSince(lastRequest) < minSyncInterval {
+            // Schedule sync for later
+            let delay = minSyncInterval - Date().timeIntervalSince(lastRequest)
+            let workItem = DispatchWorkItem { [weak self] in
+                self?.performDebouncedSync()
+            }
+            pendingSyncWorkItem = workItem
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: workItem)
+            debug("Sync scheduled in \(Int(delay))s (rate limited)", category: .services)
+            return
+        }
+        
+        performDebouncedSync()
+    }
+    
+    private func performDebouncedSync() {
+        lastSyncRequest = Date()
+        
+        Task {
+            await cloudKitManager.performSync(direction: .upload)
+            log("Sync completed", category: .services)
+        }
+    }
+    
+    /// Sync current preferences to CloudKit
+    func syncPreferencesToCloud() {
+        guard cloudKitManager.syncEnabled else { return }
+        
+        let themeManager = ThemeManager.shared
+        let preferences = SyncablePreferences.from(settings: settingsManager, theme: themeManager)
+        
+        Task {
+            do {
+                try await cloudKitManager.syncPreferences(preferences)
+                debug("Preferences synced to cloud", category: .services)
+            } catch {
+                warning("Failed to sync preferences: \(error.localizedDescription)", category: .services)
+            }
+        }
+    }
+    
+    /// Sync a game override to CloudKit
+    func syncGameOverrideToCloud(_ game: Game) {
+        guard cloudKitManager.syncEnabled else { return }
+        
+        let gameKey = game.steamAppId > 0 ? "steam:\(game.steamAppId)" : "path:\(game.executablePath.hashValue)"
+        
+        let override = SyncableGameOverride(
+            gameKey: gameKey,
+            gameName: game.name,
+            launchMethod: game.launchMethod.rawValue,
+            gptkMode: game.gptkMode.rawValue,
+            graphicsAPI: game.graphicsAPI.rawValue,
+            modifiedAt: Date()
+        )
+        
+        Task {
+            do {
+                try await cloudKitManager.syncGameOverride(override)
+                debug("Game override synced: \(game.name)", category: .services)
+            } catch {
+                warning("Failed to sync game override: \(error.localizedDescription)", category: .services)
+            }
+        }
+    }
+    
+    /// Sync a recent launch to CloudKit
+    func syncRecentLaunchToCloud(_ game: Game, success: Bool) {
+        guard cloudKitManager.syncEnabled else { return }
+        
+        let gameKey = game.steamAppId > 0 ? "steam:\(game.steamAppId)" : "path:\(game.executablePath.hashValue)"
+        
+        let launch = SyncableRecentLaunch(
+            id: UUID().uuidString,
+            gameKey: gameKey,
+            gameName: game.name,
+            launchMethod: game.launchMethod.rawValue,
+            timestamp: Date(),
+            success: success,
+            deviceName: CloudKitManager.deviceName
+        )
+        
+        Task {
+            do {
+                try await cloudKitManager.syncRecentLaunch(launch)
+                debug("Recent launch synced: \(game.name)", category: .services)
+                
+                // Prune old launches periodically
+                try await cloudKitManager.pruneRecentLaunches()
+            } catch {
+                warning("Failed to sync recent launch: \(error.localizedDescription)", category: .services)
+            }
+        }
+    }
+    
+    /// Enable or disable CloudKit sync
+    func setSyncEnabled(_ enabled: Bool) {
+        // Check iCloud availability before enabling
+        if enabled && !iCloudAvailable {
+            errorMessage = "iCloud is not available. Please sign in to iCloud in System Settings and try again."
+            error("Cannot enable sync: iCloud not available", category: .services)
+            return
+        }
+        
+        Task {
+            await cloudKitManager.setSyncEnabled(enabled)
+            if enabled {
+                log("CloudKit sync enabled", category: .services)
+                syncPreferencesToCloud()
+            } else {
+                log("CloudKit sync disabled", category: .services)
+            }
+        }
+    }
+    
+    /// Force a full sync (user-initiated)
+    func forceFullSync() {
+        // Check iCloud availability
+        if !iCloudAvailable {
+            errorMessage = "iCloud is not available. Please sign in to iCloud in System Settings."
+            error("Cannot sync: iCloud not available", category: .services)
+            return
+        }
+        
+        Task {
+            log("Starting full sync...", category: .services)
+            await cloudKitManager.performSync(direction: .merge)
         }
     }
 
@@ -214,6 +563,10 @@ class AppState: ObservableObject {
 
         // Explicit notification to ensure views re-render
         objectWillChange.send()
+        
+        // Sync preferences to CloudKit
+        syncPreferencesToCloud()
+        requestSync()
     }
 
     // MARK: - Authentication
@@ -283,20 +636,20 @@ class AppState: ObservableObject {
 
     // MARK: - Logging Methods (merged from LogManager)
 
-    func log(_ message: String, category: Category = .engine) {
-        addLogEntry(message, level: .info, category: category)
+    func log(_ message: String, category: Category = .engine, appName: String? = nil) {
+        addLogEntry(message, level: .info, category: category, appName: appName)
     }
 
-    func debug(_ message: String, category: Category = .engine) {
-        addLogEntry(message, level: .debug, category: category)
+    func debug(_ message: String, category: Category = .engine, appName: String? = nil) {
+        addLogEntry(message, level: .debug, category: category, appName: appName)
     }
 
-    func warning(_ message: String, category: Category = .engine) {
-        addLogEntry(message, level: .warning, category: category)
+    func warning(_ message: String, category: Category = .engine, appName: String? = nil) {
+        addLogEntry(message, level: .warning, category: category, appName: appName)
     }
 
-    func error(_ message: String, category: Category = .engine) {
-        addLogEntry(message, level: .error, category: category)
+    func error(_ message: String, category: Category = .engine, appName: String? = nil) {
+        addLogEntry(message, level: .error, category: category, appName: appName)
     }
 
     private func logOnce(_ message: String, category: Category) {
@@ -304,12 +657,16 @@ class AppState: ObservableObject {
         addLogEntry(message, level: .info, category: category)
     }
 
-    private func addLogEntry(_ message: String, level: LogLevel, category: Category) {
+    private func addLogEntry(
+        _ message: String, level: LogLevel, category: Category, appName: String? = nil
+    ) {
         let entry = LogEntry(
             timestamp: Date(),
             level: level,
             message: message,
-            category: category
+            category: category,
+            sessionId: currentSessionId,
+            appName: appName
         )
 
         // Console logging synchronously
@@ -325,12 +682,15 @@ class AppState: ObservableObject {
                 let excess = (self?.logs.count ?? 0) - 500
                 self?.logs.removeFirst(excess)
             }
+
+            self?.scheduleLogsCacheSave()
         }
     }
 
     func clearLogs() {
         DispatchQueue.main.async { [weak self] in
             self?.logs.removeAll()
+            self?.scheduleLogsCacheSave()
         }
     }
 
@@ -377,7 +737,7 @@ class AppState: ObservableObject {
     // MARK: - Game Detection & Management
 
     func loadPrefixes() {
-        // Load persisted prefixes from defaults
+        // Ensure at least one prefix exists
         if prefixes.isEmpty {
             let defaultPrefix = GamePrefix(
                 id: UUID(),
@@ -387,6 +747,7 @@ class AppState: ObservableObject {
                 isDefault: true
             )
             prefixes.append(defaultPrefix)
+            savePrefixesCache()
         }
     }
 
@@ -420,6 +781,7 @@ class AppState: ObservableObject {
 
                     self.games = enrichedGames.sorted { $0.name < $1.name }
                     self.isLoading = false
+                    self.saveGamesCache()
                     self.developerFeedback.logSuccess(
                         "GameDetection",
                         message: "Found \(self.games.count) games")
@@ -429,6 +791,7 @@ class AppState: ObservableObject {
                 DispatchQueue.main.async {
                     self.games = []
                     self.isLoading = false
+                    self.saveGamesCache()
                     self.setError(
                         .steamNotInstalled, details: "Make sure Steam is installed and has games")
                 }
@@ -482,7 +845,8 @@ class AppState: ObservableObject {
                     self.isLaunchLoading = false
                 }
 
-                if report.isEmpty {
+                // Launch if no required dependencies (optional-only is OK)
+                if report.isEmpty || report.required.isEmpty {
                     DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                         self?.launcher.launch(game)
                     }
@@ -545,7 +909,7 @@ class AppState: ObservableObject {
         }
     }
 
-    func recordRecentLaunch(_ game: Game) {
+    func recordRecentLaunch(_ game: Game, success: Bool = true) {
         let entry = RecentLaunch(
             name: game.name,
             executablePath: game.executablePath,
@@ -560,6 +924,10 @@ class AppState: ObservableObject {
             if self.recentLaunches.count > self.maxRecentLaunches {
                 self.recentLaunches = Array(self.recentLaunches.prefix(self.maxRecentLaunches))
             }
+            self.saveRecentsCache()
+            
+            // Sync to CloudKit
+            self.syncRecentLaunchToCloud(game, success: success)
         }
     }
 
@@ -579,6 +947,9 @@ class AppState: ObservableObject {
         if let index = games.firstIndex(where: { $0.id == gameId }) {
             games[index].launchMethod = method
             settingsManager.setLaunchMethod(method, for: games[index])
+            // Sync game override to CloudKit
+            syncGameOverrideToCloud(games[index])
+            requestSync()
         }
     }
 
@@ -586,6 +957,9 @@ class AppState: ObservableObject {
         if let index = games.firstIndex(where: { $0.id == gameId }) {
             games[index].gptkMode = mode
             settingsManager.setGPTKMode(mode, for: games[index])
+            // Sync game override to CloudKit
+            syncGameOverrideToCloud(games[index])
+            requestSync()
         }
     }
 
@@ -593,6 +967,9 @@ class AppState: ObservableObject {
         if let index = games.firstIndex(where: { $0.id == gameId }) {
             games[index].graphicsAPI = api
             settingsManager.setGraphicsAPI(api, for: games[index])
+            // Sync game override to CloudKit
+            syncGameOverrideToCloud(games[index])
+            requestSync()
         }
     }
 
@@ -621,12 +998,14 @@ class AppState: ObservableObject {
         )
 
         prefixes.append(prefix)
+        savePrefixesCache()
         developerFeedback.logSuccess("PrefixManager", message: "Created prefix: \(name)")
         log("Prefix created: \(name)", category: .prefixes)
     }
 
     func deletePrefix(_ prefix: GamePrefix) {
         prefixes.removeAll { $0.id == prefix.id }
+        savePrefixesCache()
 
         // Clean up filesystem
         let fileManager = FileManager.default

@@ -2,7 +2,7 @@ import CryptoKit
 import Foundation
 
 /// Developer feedback system with authentication
-/// Access via password: efealibel0422! (hashed for security)
+/// Access via developer password (set in code)
 class DeveloperFeedback {
     static let shared = DeveloperFeedback()
     private let appState = AppState.shared
@@ -49,7 +49,7 @@ class DeveloperFeedback {
     private var successLogs: [SuccessLog] = []
     private var _isAuthenticated = false
 
-    // Password: efealibel0422!
+    // Developer password hash
     // SHA256 hash: 8d969eef6ecad3c29a3a873e9c9e44e47c6d1e1e3a90be2a3c5e48c12c3c4d5
     private let hashedPassword = "8d969eef6ecad3c29a3a873e9c9e44e47c6d1e1e3a90be2a3c5e48c12c3c4d5"
 

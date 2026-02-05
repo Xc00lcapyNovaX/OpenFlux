@@ -109,6 +109,14 @@ final class WineEnvironmentBuilder {
         environment["DXVK_HUD"] = "off"
         environment["WINE_CPU_TOPOLOGY"] = "\(ProcessInfo.processInfo.processorCount)"
 
+        // SSL/TLS and security components
+        // Fix cipher algorithm issues by forcing modern SSL/TLS
+        environment["OPENSSL_CONF"] = "/etc/ssl/openssl.cnf"
+        environment["GNUTLS_SYSTEM_PRIORITY_FILE"] = "/etc/gnutls/default-priorities"
+
+        // Network performance
+        environment["WINE_NET"] = "1"
+
         return environment
     }
 }

@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /Users/efealibel/OpenFlux
+cd "$(dirname "$0")"
 
 # Clean up rebase state
 rm -rf .git/rebase-merge .git/.COMMIT_EDITMSG.swp
